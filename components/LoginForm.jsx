@@ -27,7 +27,7 @@ const LoginForm = () => {
             if (res.status === 'SUCCESS') {
                 toast({
                     title: 'Success',
-                    message: 'User Logged In Successfully'
+                    description: 'User Logged In Successfully'
                 })
 
                 router.push(`/`)
