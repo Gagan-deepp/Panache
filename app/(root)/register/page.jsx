@@ -8,7 +8,7 @@ const page = async () => {
 
     const session = await auth()
 
-    if (!session.role === "admin") redirect('/login')
+    if (session.role != "admin") redirect('/login')
     return (
         <div className='section_container' >
             <section className="grey_container rounded-3xl relative mt-12" >
