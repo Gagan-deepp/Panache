@@ -20,7 +20,6 @@ const page = async({ searchParams }) => {
                         ))
                     }
                 </div>
-
                 {category && eventData.status === "SUCCESS" && (
                     <div className="mt-8" >
                         <h1 className="sub-heading" > {category} Details  </h1>
