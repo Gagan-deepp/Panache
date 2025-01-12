@@ -3,11 +3,10 @@ import Link from 'next/link'
 
 const Navbar = async () => {
     const session = await auth()
-    console.log("Nav session  : ", session.username)
     return (
-        <header className='px-6 py-2 shadow-sm fixed top-0 left-0 right-0'  >
+        <header className='px-6 py-2 shadow-sm fixed top-0 left-0 right-0 bg-white z-50'  >
             <nav className='flex justify-between items-center' >
-                <Link href="/" > Panache </Link>
+                <Link href="/" className='text-2xl uppercase ' > Panache </Link>
 
                 <div className='flex items-center gap-5 text-base' >
                     {

@@ -24,7 +24,6 @@ const LoginForm = () => {
             await loginSchema.parseAsync(formValues);
             const res = await logInUser(formData)
 
-            console.log("Responseeee : ", res)
             if (res.status === 'SUCCESS') {
                 toast({
                     title: 'Success',

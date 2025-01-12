@@ -3,12 +3,25 @@
 @tailwind utilities;
 
 body {
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: "Ubuntu", serif
+}
+
+body::-webkit-scrollbar {
+  display: none;
 }
 
 @layer utilities {
+
+  .grey_container {
+    @apply w-full bg-transparent min-h-[530px] flex justify-center items-center flex-col py-10 z-10;
+  }
+
+  .heading {
+    @apply uppercase bg-black-2 px-6 py-3 font-extrabold text-white sm:text-[54px] sm:leading-[64px] text-[36px] leading-[46px] max-w-5xl text-center my-5;
+  }
+
   .section_container {
-    @apply py-16 max-w-[90%] mx-auto overflow-hidden;
+    @apply py-4 max-w-[90%] mx-auto overflow-hidden;
   }
 
   /* startupform */
@@ -25,16 +38,17 @@ body {
   }
 
   .startup-form_select {
-    @apply border-[3px] border-black px-5 py-7 text-[18px] text-black font-semibold rounded-full mt-3 placeholder:text-black-300 !important;
+    @apply border-[3px] border-black px-5 py-7 text-[18px] text-black font-semibold rounded-xl mt-3 placeholder:text-black-300 !important;
   }
 
   .select_content {
-    @apply bg-black-3 placeholder:text-black-300 !important;
+    @apply bg-black-100 placeholder:text-black-300 !important;
   }
 
   .select_item {
-    @apply text-[16px] rounded-none px-2 py-4 font-semibold text-white-1 border-b border-grey-2 cursor-pointer !important;
+    @apply text-[16px] rounded-none px-2 py-4 font-semibold text-white-1 border-b border-grey-1 cursor-pointer !important;
   }
+
   .startup-form_textarea {
     @apply border-[3px] border-black p-5 text-[18px] text-black font-semibold rounded-[20px] mt-3 placeholder:text-black-300 !important;
   }
@@ -43,12 +57,8 @@ body {
     @apply text-red-500 mt-2 ml-5;
   }
 
-  .startup-form_editor {
-    @apply mt-3 border-[3px] border-black text-[18px] text-black font-semibold placeholder:text-black-300 !important;
-  }
-
   .startup-form_btn {
-    @apply bg-black-3 cursor-pointer hover:bg-black-hover duration-200 transition-all border-[4px] border-black rounded-full p-5 min-h-[70px] w-full font-bold text-[18px] !important;
+    @apply bg-black-3 cursor-pointer hover:bg-black-hover duration-200 transition-all border-[4px] border-black rounded-xl p-5 min-h-[70px] w-full font-bold text-[18px] !important;
   }
 }
 

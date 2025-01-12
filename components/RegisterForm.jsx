@@ -1,37 +1,57 @@
 "use client"
 
-import { useToast } from '@/hooks/use-toast'
-import { logInUser } from '@/lib/actions/auth'
-import { loginSchema } from '@/lib/validation'
-import { Send } from 'lucide-react'
-import { useRouter } from 'next/navigation'
-import { useActionState, useState } from 'react'
 import { z } from 'zod'
+import { useToast } from '@/hooks/use-toast'
+import { registerStudent } from '@/lib/actions/register'
+import { registerSchema } from '@/lib/validation'
+import { Loader, Send } from 'lucide-react'
+import { useActionState, useState } from 'react'
+import SelectCategory from './SelectCategory'
+import SelectEvent from './SelectEvent'
 import { Button } from './ui/button'
 import { Input } from './ui/input'
 
 const RegisterForm = () => {
-    const [errors, setErrors] = useState({})
+
     const { toast } = useToast();
-    const router = useRouter();
+    const [errors, setErrors] = useState({})
+    const [events, setEvents] = useState([
+        { category: '', eventName: '' },
+        { category: '', eventName: '' },
+        { category: '', eventName: '' },
+    ]);
+    const eventsInitial = [
+        { category: '', eventName: '' },
+        { category: '', eventName: '' },
+        { category: '', eventName: '' },
+    ];
 
     const handleFormSubmit = async (prevState, formData) => {
         try {
             const formValues = {
-                username: formData.get("username"),
-                password: formData.get("password"),
+                name: formData.get("name"),
+                rollno: formData.get("rollno"),
+                course: formData.get("course"),
+                branch: formData.get("branch"),
+                email: formData.get("email"),
+                phone: formData.get("phone"),
+                events: events,
             }
-            await loginSchema.parseAsync(formValues);
-            const res = await logInUser(formData)
+            events.forEach((event, i) => {
+                formData.append(`category${i}`, event.category);
+                formData.append(`eventName${i}`, event.eventName);
+            });
 
-            console.log("Responseeee : ", res)
+            await registerSchema.parseAsync(formValues);
+            const res = await registerStudent({ formData })
+
             if (res.status === 'SUCCESS') {
                 toast({
                     title: 'Success',
-                    message: 'User Logged In Successfully'
+                    description: res.message
                 })
-
-                router.push(`/`)
+                setEvents(eventsInitial);
+                setErrors({});
             }
         } catch (error) {
 
@@ -41,7 +61,7 @@ const RegisterForm = () => {
 
                 toast({
                     title: 'Error',
-                    password: 'Please check your input and try again..'
+                    description: 'Please check your input and try again..'
                 })
 
                 return { ...prevState, error: "Validation Failed", status: "Error" }
@@ -49,7 +69,7 @@ const RegisterForm = () => {
 
             toast({
                 title: 'Error',
-                password: 'An unexpected Error Occured'
+                description: error.message
             })
             return {
                 ...prevState,
@@ -59,6 +79,7 @@ const RegisterForm = () => {
         }
     }
     const [state, formAction, isPending] = useActionState(handleFormSubmit, { error: "", status: "INITIAL" });
+
     return (
         <form action={formAction} className='startup-form'  >
             <div>
@@ -73,7 +94,7 @@ const RegisterForm = () => {
                 {errors.rollno && <p className='startup-form_error'> {errors.rollno} </p>}
             </div>
 
-            <div className='flex justify-between items-center' >
+            <div className='flex justify-between items-center flex-wrap gap-4' >
                 <div>
                     <label htmlFor="Course" className='startup-form_label' > Student Course </label>
                     <Input id="course" name="course" required className='startup-form_input' placeholder="Enter course" />
@@ -85,7 +106,7 @@ const RegisterForm = () => {
                     {errors.branch && <p className='startup-form_error'> {errors.branch} </p>}
                 </div>
             </div>
-            
+
             <div>
                 <label htmlFor="email" className='startup-form_label' > Student Email Address </label>
                 <Input id="email" name="email" required className='startup-form_input' placeholder="Enter email" />
@@ -97,10 +118,25 @@ const RegisterForm = () => {
                 {errors.phone && <p className='startup-form_error'> {errors.phone} </p>}
             </div>
 
+            {events.map((event, i) => (
+                <div key={i} >
+                    <label htmlFor="category" className='startup-form_label' > Event Category - {i + 1} </label>
+                    <SelectCategory id="category" name="category" value={event.category} events={events} setEvents={setEvents} i={i} />
+                    {errors.category && <p className='startup-form_error'> {errors.category} </p>}
 
-            <Button type="submit" className="startup-form_btn text-bg-white" disbaled={isPending.toString()} >
+                    {event.category && (
+                        <div className='mt-4' >
+                            <label htmlFor="eventName" className='startup-form_label' > Event Name </label>
+                            <SelectEvent id={`eventName${i}`} name="category" category={event.category} events={events} setEvents={setEvents} i={i} />
+                            {errors.eventName && <p className='startup-form_error'> {errors.eventName} </p>}
+                        </div>
+                    )}
+                </div>
+            ))}
+
+            <Button type="submit" className="startup-form_btn text-bg-white" disbaled={isPending} >
                 {isPending ? 'Signing in...' : 'Sign In'}
-                <Send className='size-6 ml-2' />
+               { isPending ? <Loader className='animate-spin size-6 ml-2' /> :<Send className='size-6 ml-2' />}
             </Button>
         </form>
     )
