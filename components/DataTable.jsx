@@ -1,61 +1,16 @@
 "use client"
 
-import * as React from "react"
-import {
-    flexRender,
-    getCoreRowModel,
-    getFilteredRowModel,
-    getPaginationRowModel,
-    getSortedRowModel,
-    useReactTable,
-} from "@tanstack/react-table"
-import { ArrowUpDown, ChevronDown, MoreHorizontal } from 'lucide-react'
-
 import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
-
 import { Input } from "@/components/ui/input"
-import {
-    Table,
-    TableBody,
-    TableCell,
-    TableHead,
-    TableHeader,
-    TableRow,
-} from "@/components/ui/table"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
+import { eventName } from "@/lib/data"
+import { flexRender, getCoreRowModel, getFilteredRowModel, getPaginationRowModel, getSortedRowModel, useReactTable } from "@tanstack/react-table"
+import { ArrowUpDown } from 'lucide-react'
+import { useEffect, useState } from 'react'
 
-const data = [
-    {
-        id: "m5gr84i9",
-        amount: 316,
-        status: "success",
-        email: "ken99@yahoo.com",
-    },
-    {
-        id: "3u1reuv4",
-        amount: 242,
-        status: "success",
-        email: "Abe45@gmail.com",
-    },
-    {
-        id: "derv1ws0",
-        amount: 837,
-        status: "processing",
-        email: "Monserrat44@gmail.com",
-    },
-    {
-        id: "5kma53ae",
-        amount: 874,
-        status: "success",
-        email: "Silas22@gmail.com",
-    },
-    {
-        id: "bhqecj4p",
-        amount: 721,
-        status: "failed",
-        email: "carmella@hotmail.com",
-    },
-]
+
 
 const columns = [
     {
@@ -81,10 +36,10 @@ const columns = [
         enableHiding: false,
     },
     {
-        accessorKey: "roll",
+        accessorKey: "rollno",
         header: "Roll No",
         cell: ({ row }) => (
-            <div className="capitalize">{row.getValue("status")}</div>
+            <div className="capitalize">{row.getValue("rollno")}</div>
         ),
     },
     {
@@ -96,27 +51,41 @@ const columns = [
                     onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
                 >
                     Name
-                    <ArrowUpDown />
+                    <ArrowUpDown className="ml-2 h-4 w-4" />
                 </Button>
             )
         },
+        cell: ({ row }) => <div>{row.getValue("name")}</div>,
+    },
+    {
+        accessorKey: "email",
+        header: "Email",
         cell: ({ row }) => <div className="lowercase">{row.getValue("email")}</div>,
     },
     {
+        accessorKey: "event",
+        header: "Event",
+        cell: ({ row }) => <div>{row.getValue("event").map((item, i) => (<p key={i}> {item}, </p>))}</div>,
+    },
+    {
         accessorKey: "uuid",
-        header: () => <div className="text-right"> ID </div>,
-        cell: ({ row }) => {
-            return <div className="text-right font-medium">{row.getValue("amount")}</div>
-        },
+        header: "UUID",
+        cell: ({ row }) => <div className="font-mono text-xs">{row.getValue("uuid")}</div>,
     },
 
 ]
 
-export const DataTable = () => {
-    const [sorting, setSorting] = React.useState([])
-    const [columnFilters, setColumnFilters] = React.useState([])
-    const [columnVisibility, setColumnVisibility] = React.useState({})
-    const [rowSelection, setRowSelection] = React.useState({})
+export const DataTable = ({ data, category }) => {
+    const [sorting, setSorting] = useState([])
+    const [columnFilters, setColumnFilters] = useState([])
+    const [columnVisibility, setColumnVisibility] = useState({})
+    const [rowSelection, setRowSelection] = useState({})
+    const [selectedEvent, setSelectedEvent] = useState("");
+    const eventCategories = eventName[category]
+    const [pagination, setPagination] = useState({
+        pageIndex: 0,
+        pageSize: 20,
+    })
 
     const table = useReactTable({
         data,
@@ -129,27 +98,62 @@ export const DataTable = () => {
         getFilteredRowModel: getFilteredRowModel(),
         onColumnVisibilityChange: setColumnVisibility,
         onRowSelectionChange: setRowSelection,
+        onPaginationChange: setPagination,
         state: {
             sorting,
             columnFilters,
             columnVisibility,
             rowSelection,
+            pagination,
+        },
+        filterFns: {
+            byEvent: (row, id, filterValue) => {
+                const event = row.getValue(id);
+                return (
+                    filterValue === "" ||
+                    event.some(
+                        (event) => event.eventName === filterValue || event.category === filterValue
+                    )
+                );
+            },
         },
     })
+    useEffect(() => {
+        if (selectedEvent) {
+            table.getColumn("event")?.setFilterValue(selectedEvent);
+        } else {
+            table.getColumn("event")?.setFilterValue(undefined);
+        }
+    }, [selectedEvent, table]);
+
 
     return (
         <div className="w-full">
-            <div className="flex items-center py-4">
+            <div className="flex items-center justify-between py-4 flex-wrap gap-5">
                 <Input
-                    placeholder="Filter emails..."
-                    value={(table.getColumn("email")?.getFilterValue() ?? "")}
+                    placeholder="Filter names..."
+                    value={(table.getColumn("name")?.getFilterValue() ?? "")}
                     onChange={(event) =>
-                        table.getColumn("email")?.setFilterValue(event.target.value)
+                        table.getColumn("name")?.setFilterValue(event.target.value)
                     }
                     className="max-w-sm"
                 />
+                <Select
+                    value={selectedEvent} onValueChange={setSelectedEvent}
+                >
+                    <SelectTrigger className="w-[180px]">
+                        <SelectValue placeholder="Select event" />
+                    </SelectTrigger>
+                    <SelectContent>
+                        {eventCategories.map((category) => (
+                            <SelectItem key={category} value={category}>
+                                {category}
+                            </SelectItem>
+                        ))}
+                    </SelectContent>
+                </Select>
             </div>
-            <div className="rounded-md border">
+            <div className="rounded-md border mt-8">
                 <Table>
                     <TableHeader>
                         {table.getHeaderGroups().map((headerGroup) => (
@@ -199,7 +203,7 @@ export const DataTable = () => {
                     </TableBody>
                 </Table>
             </div>
-            <div className="flex items-center justify-end space-x-2 py-4">
+            <div className="flex items-center justify-between space-x-2 py-4">
                 <div className="flex-1 text-sm text-muted-foreground">
                     {table.getFilteredSelectedRowModel().rows.length} of{" "}
                     {table.getFilteredRowModel().rows.length} row(s) selected.
@@ -222,6 +226,16 @@ export const DataTable = () => {
                         Next
                     </Button>
                 </div>
+            </div>
+            <div className="flex justify-center mt-4">
+                <Button
+                    onClick={() => {
+                        const newPageSize = table.getState().pagination.pageSize + 10
+                        table.setPageSize(newPageSize)
+                    }}
+                >
+                    Show More
+                </Button>
             </div>
         </div>
     )

@@ -135,7 +135,7 @@ const RegisterForm = () => {
             ))}
 
             <Button type="submit" className="startup-form_btn text-bg-white" disbaled={isPending} >
-                {isPending ? 'Signing in...' : 'Sign In'}
+                {isPending ? 'Registering...' : 'Register'}
                { isPending ? <Loader className='animate-spin size-6 ml-2' /> :<Send className='size-6 ml-2' />}
             </Button>
         </form>

@@ -20,6 +20,10 @@ body::-webkit-scrollbar {
     @apply uppercase bg-black-2 px-6 py-3 font-extrabold text-white sm:text-[54px] sm:leading-[64px] text-[36px] leading-[46px] max-w-5xl text-center my-5;
   }
 
+  .sub-heading {
+    @apply font-medium text-[20px] sm:text-3xl text-black-2 break-words;
+  }
+
   .section_container {
     @apply py-4 max-w-[90%] mx-auto overflow-hidden;
   }
@@ -59,6 +63,38 @@ body::-webkit-scrollbar {
 
   .startup-form_btn {
     @apply bg-black-3 cursor-pointer hover:bg-black-hover duration-200 transition-all border-[4px] border-black rounded-xl p-5 min-h-[70px] w-full font-bold text-[18px] !important;
+  }
+
+  .tab {
+    @apply flex overflow-hidden min-h-[50px] flex-1 items-center gap-3 bg-[#202020] text-grey-1 data-[state=active]:bg-[#0e0e12] data-[state=active]:text-grey-2 !important;
+  }
+
+  .hamBurger:before,
+  .hamBurger:after,
+  .hamBurger .inner {
+    background: black;
+    content: "";
+    display: block;
+    height: 5px;
+    border-radius: 3px;
+    margin: 7px 0;
+    transition: 0.5s ease-in-out;
+  }
+
+  .hamBurger:hover:before {
+    transform: translateY(12px) rotate(135deg);
+    background: #171717;
+    position: relative;
+    z-index: 1;
+  }
+
+  .hamBurger:hover:after {
+    background: #171717;
+    transform: translateY(-12px) rotate(-135deg);
+  }
+
+  .hamBurger:hover .inner {
+    transform: scale(0);
   }
 }
 

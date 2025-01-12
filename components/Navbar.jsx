@@ -1,5 +1,6 @@
 import { auth } from '@/lib/actions/auth'
 import Link from 'next/link'
+import MobileNavigation from './MobileNav'
 
 const Navbar = async () => {
     const session = await auth()
@@ -8,7 +9,7 @@ const Navbar = async () => {
             <nav className='flex justify-between items-center' >
                 <Link href="/" className='text-2xl uppercase ' > Panache </Link>
 
-                <div className='flex items-center gap-5 text-base' >
+                <div className='sm:flex items-center gap-5 text-base hidden' >
                     {
                         session && session?.username ?
                             (
@@ -26,6 +27,7 @@ const Navbar = async () => {
                             )
                     }
                 </div>
+                <MobileNavigation session={session?.username} />
             </nav>
         </header>
     )
