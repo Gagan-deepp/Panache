@@ -54,6 +54,11 @@ const RegisterForm = () => {
                 })
                 setEvents(eventsInitial);
                 setErrors({});
+            } else {
+                toast({
+                    title: 'Fail',
+                    description: res.message
+                })
             }
         } catch (error) {
 
@@ -140,7 +145,7 @@ const RegisterForm = () => {
                 Add More
             </Button>
 
-            <Button type="submit" className="startup-form_btn text-bg-white" disbaled={isPending} >
+            <Button type="submit" className="startup-form_btn text-bg-white" disabled={isPending} >
                 {isPending ? 'Registering...' : 'Register'}
                 {isPending ? <Loader className='animate-spin size-6 ml-2' /> : <Send className='size-6 ml-2' />}
             </Button>

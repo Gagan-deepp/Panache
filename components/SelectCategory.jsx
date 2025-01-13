@@ -1,7 +1,7 @@
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { eventCategory } from "@/lib/data";
 
-const SelectCategory = ({ events, value, setEvents, i }) => {
+const SelectCategory = ({ events, value, setEvents, i = 0 }) => {
 
     const handleChange = (selectedCategory) => {
         const updatedEvents = [...events];
@@ -12,7 +12,7 @@ const SelectCategory = ({ events, value, setEvents, i }) => {
     return (
         <Select value={value} onValueChange={(val) => handleChange(val)} >
             <SelectTrigger className="startup-form_select">
-                <SelectValue placeholder="Select a Community" />
+                <SelectValue placeholder="Select Event Category" />
             </SelectTrigger>
             {eventCategory?.length > 0 && (
                 <SelectContent className="select_content" >

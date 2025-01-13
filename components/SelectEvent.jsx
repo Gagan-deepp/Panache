@@ -1,7 +1,7 @@
 import { eventName } from "@/lib/data"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/select"
 
-const SelectEvent = ({ events, category, i, setEvents }) => {
+const SelectEvent = ({ events, category, i = 0, setEvents }) => {
 
     const selectedEvents = events.filter((_, index) => index !== i).map((event) => event.eventName);
     const filteredEventNames = eventName[category]?.filter((event) => !selectedEvents.includes(event)) || [];

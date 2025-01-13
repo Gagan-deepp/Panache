@@ -40,6 +40,18 @@ const GroupSchema = new mongoose.Schema({
             },
         }],
     },
+    event: {
+        type: [{
+            category: {
+                type: String,
+                required: [true, "Event category is required"],
+            },
+            eventName: {
+                type: String,
+                required: [true, "Event name is required"],
+            },
+        }],
+    },
 
 }, { timestamps: true })
 
