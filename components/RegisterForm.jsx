@@ -10,6 +10,7 @@ import SelectCategory from './SelectCategory'
 import SelectEvent from './SelectEvent'
 import { Button } from './ui/button'
 import { Input } from './ui/input'
+import { mailToStudent } from '@/lib/actions/auth'
 
 const RegisterForm = () => {
 
@@ -48,6 +49,8 @@ const RegisterForm = () => {
             const res = await registerStudent({ formData })
 
             if (res.status === 'SUCCESS') {
+
+                await mailToStudent(formValues);
                 toast({
                     title: 'Success',
                     description: res.message
