@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { useState } from 'react'
 
 const MobileNavigation = ({ username }) => {
+
     const [isMenuOpen, setIsMenuOpen] = useState(false)
 
     const variants = {

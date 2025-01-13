@@ -1,4 +1,4 @@
-import { auth } from '@/lib/actions/auth'
+import { auth, logout } from '@/lib/actions/auth'
 import Link from 'next/link'
 import MobileNavigation from './MobileNav'
 
@@ -16,6 +16,11 @@ const Navbar = async () => {
                                 <>
                                     <Link href="/register" > Registration </Link>
                                     <Link href="/view" > View Participants </Link>
+                                    <form action={logout}>
+                                        <button>
+                                            Logout
+                                        </button>
+                                    </form>
                                 </>
                             )
                             : (
@@ -27,7 +32,7 @@ const Navbar = async () => {
                             )
                     }
                 </div>
-                <MobileNavigation session={session?.username} />
+                <MobileNavigation username={session.username} />
             </nav>
         </header>
     )

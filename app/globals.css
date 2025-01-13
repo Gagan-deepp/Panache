@@ -23,6 +23,9 @@ body::-webkit-scrollbar {
   .sub-heading {
     @apply font-medium text-[20px] sm:text-3xl text-black-2 break-words;
   }
+  .small-heading {
+    @apply font-medium text-[18px] sm:text-xl text-black-2 break-words;
+  }
 
   .section_container {
     @apply py-4 max-w-[90%] mx-auto overflow-hidden;
@@ -66,7 +69,7 @@ body::-webkit-scrollbar {
   }
 
   .tab {
-    @apply flex overflow-hidden min-h-[50px] flex-1 items-center gap-3 bg-[#202020] text-grey-1 data-[state=active]:bg-[#0e0e12] data-[state=active]:text-grey-2 !important;
+    @apply flex overflow-hidden min-h-[50px] flex-1 items-center gap-3 bg-[#202020] text-grey-1;
   }
 
   .hamBurger:before,

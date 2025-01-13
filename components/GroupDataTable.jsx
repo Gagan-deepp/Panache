@@ -35,13 +35,6 @@ const columns = [
         enableHiding: false,
     },
     {
-        accessorKey: "rollno",
-        header: "Roll No",
-        cell: ({ row }) => (
-            <div className="capitalize">{row.getValue("rollno")}</div>
-        ),
-    },
-    {
         accessorKey: "name",
         header: ({ column }) => {
             return (
@@ -49,7 +42,7 @@ const columns = [
                     variant="ghost"
                     onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
                 >
-                    Name
+                    Group Name
                     <ArrowUpDown className="ml-2 h-4 w-4" />
                 </Button>
             )
@@ -57,17 +50,36 @@ const columns = [
         cell: ({ row }) => <div>{row.getValue("name")}</div>,
     },
     {
+        accessorKey: "leader",
+        header: "Group Leader",
+        cell: ({ row }) => <div className="capitalize">{row.getValue("leader")}</div>,
+    },
+    {
         accessorKey: "email",
         header: "Email",
         cell: ({ row }) => <div className="lowercase">{row.getValue("email")}</div>,
     },
     {
+        accessorKey: "phone",
+        header: "Phone",
+        cell: ({ row }) => (
+            <div>{row.getValue("phone")}</div>
+        ),
+    },
+    {
         accessorKey: "event",
         header: "Event",
         cell: ({ row }) => (
+            <div>{row.getValue("event")}</div>
+        ),
+    },
+    {
+        accessorKey: "members",
+        header: "Members",
+        cell: ({ row }) => (
             <div>
-                {row.getValue("event").map((item, i) => (
-                    <p key={i}>{item}{i < row.getValue("event").length - 1 ? ', ' : ''}</p>
+                {row.getValue("members").map((item, i) => (
+                    <p key={i}>{item}{i < row.getValue("members").length - 1 ? ', ' : ''}</p>
                 ))}
             </div>
         ),
@@ -79,7 +91,7 @@ const columns = [
     },
 ]
 
-export const DataTable = ({ data, category }) => {
+export const GroupDataTable = ({ data, category }) => {
     const [sorting, setSorting] = useState([])
     const [columnFilters, setColumnFilters] = useState([])
     const [columnVisibility, setColumnVisibility] = useState({})
@@ -126,17 +138,19 @@ export const DataTable = ({ data, category }) => {
     })
     const exportToExcel = () => {
         const exportData = filteredData.map(item => ({
-            "Roll No": item.rollno,
             "Name": item.name,
+            "Leader": item.leader,
             "Email": item.email,
+            "Phone": item.phone,
             "Events": item.event.join(", "),
+            "Members": item.members.join(", "),
             "UUID": item.uuid
         }));
 
         const ws = XLSX.utils.json_to_sheet(exportData);
         const wb = XLSX.utils.book_new();
         XLSX.utils.book_append_sheet(wb, ws, "Students");
-        XLSX.writeFile(wb, `students_data_${category}_${selectedEvent}.xlsx`);
+        XLSX.writeFile(wb, `group_students_data_${category}_${selectedEvent}.xlsx`);
     };
     useEffect(() => {
         table.setPageIndex(0);
@@ -154,7 +168,7 @@ export const DataTable = ({ data, category }) => {
                     className="max-w-sm"
                 />
                 <div className='flex gap-5' >
-                    <Button onClick={exportToExcel} >
+                    <Button onClick={exportToExcel} className="">
                         <Download className="mr-2 h-4 w-4" />
                         Export to Excel
                     </Button>
