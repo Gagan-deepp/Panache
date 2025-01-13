@@ -4,7 +4,7 @@ import { eventCategory } from "@/lib/data"
 import Link from "next/link"
 
 
-const page = async({ searchParams }) => {
+const page = async ({ searchParams }) => {
     const category = (await searchParams).category;
     const eventData = await fetchEventData(category)
 
@@ -13,11 +13,14 @@ const page = async({ searchParams }) => {
             <div className="w-full">
                 <div className="tab rounded-xl" >
                     {
-                        eventCategory.map((event, i) => (
-                            <Link key={i} href={`/view?category=${event.name}`} className="startup-card_btn tab justify-center" >
-                                {event.name}
-                            </Link>
-                        ))
+                        eventCategory.map((event, i) => {
+                            let isActive = event.name === category
+                            return (
+                                <Link key={i} href={`/view?category=${event.name}`} className={`startup-card_btn tab justify-center ${isActive && "text-slate-200"} `} >
+                                    {event.name}
+                                </Link>
+                            )
+                        })
                     }
                 </div>
                 {category && eventData.status === "SUCCESS" && (

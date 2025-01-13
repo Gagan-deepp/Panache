@@ -1,16 +1,15 @@
 "use client"
 
+import * as XLSX from 'xlsx';
 import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { eventName } from "@/lib/data"
+import { eventCategory, eventName } from "@/lib/data"
 import { flexRender, getCoreRowModel, getFilteredRowModel, getPaginationRowModel, getSortedRowModel, useReactTable } from "@tanstack/react-table"
-import { ArrowUpDown } from 'lucide-react'
-import { useEffect, useState } from 'react'
-
-
+import { ArrowUpDown, Download } from 'lucide-react'
+import { useEffect, useState, useMemo } from 'react'
 
 const columns = [
     {
@@ -65,14 +64,19 @@ const columns = [
     {
         accessorKey: "event",
         header: "Event",
-        cell: ({ row }) => <div>{row.getValue("event").map((item, i) => (<p key={i}> {item}, </p>))}</div>,
+        cell: ({ row }) => (
+            <div>
+                {row.getValue("event").map((item, i) => (
+                    <p key={i}>{item}{i < row.getValue("event").length - 1 ? ', ' : ''}</p>
+                ))}
+            </div>
+        ),
     },
     {
         accessorKey: "uuid",
         header: "UUID",
         cell: ({ row }) => <div className="font-mono text-xs">{row.getValue("uuid")}</div>,
     },
-
 ]
 
 export const DataTable = ({ data, category }) => {
@@ -80,15 +84,28 @@ export const DataTable = ({ data, category }) => {
     const [columnFilters, setColumnFilters] = useState([])
     const [columnVisibility, setColumnVisibility] = useState({})
     const [rowSelection, setRowSelection] = useState({})
-    const [selectedEvent, setSelectedEvent] = useState("");
     const eventCategories = eventName[category]
+    const [selectedEvent, setSelectedEvent] = useState("all");
     const [pagination, setPagination] = useState({
         pageIndex: 0,
         pageSize: 20,
     })
 
+    const allEventNames = useMemo(() => {
+        return category === "All"
+            ? ["all", ...Object.values(eventName).flat()]
+            : ["all", ...(eventName[category] || [])];
+    }, [category]);
+
+    const filteredData = useMemo(() => {
+        if (selectedEvent === "all") {
+            return data;
+        }
+        return data.filter(item => item.event.includes(selectedEvent));
+    }, [data, selectedEvent]);
+
     const table = useReactTable({
-        data,
+        data: filteredData,
         columns,
         onSortingChange: setSorting,
         onColumnFiltersChange: setColumnFilters,
@@ -106,26 +123,24 @@ export const DataTable = ({ data, category }) => {
             rowSelection,
             pagination,
         },
-        filterFns: {
-            byEvent: (row, id, filterValue) => {
-                const event = row.getValue(id);
-                return (
-                    filterValue === "" ||
-                    event.some(
-                        (event) => event.eventName === filterValue || event.category === filterValue
-                    )
-                );
-            },
-        },
     })
-    useEffect(() => {
-        if (selectedEvent) {
-            table.getColumn("event")?.setFilterValue(selectedEvent);
-        } else {
-            table.getColumn("event")?.setFilterValue(undefined);
-        }
-    }, [selectedEvent, table]);
+    const exportToExcel = () => {
+        const exportData = filteredData.map(item => ({
+            "Roll No": item.rollno,
+            "Name": item.name,
+            "Email": item.email,
+            "Events": item.event.join(", "),
+            "UUID": item.uuid
+        }));
 
+        const ws = XLSX.utils.json_to_sheet(exportData);
+        const wb = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(wb, ws, "Students");
+        XLSX.writeFile(wb, `students_data_${category}_${selectedEvent}.xlsx`);
+    };
+    useEffect(() => {
+        table.setPageIndex(0);
+    }, [selectedEvent]);
 
     return (
         <div className="w-full">
@@ -138,16 +153,21 @@ export const DataTable = ({ data, category }) => {
                     }
                     className="max-w-sm"
                 />
+                <Button onClick={exportToExcel} className="ml-auto">
+                    <Download className="mr-2 h-4 w-4" />
+                    Export to Excel
+                </Button>
                 <Select
-                    value={selectedEvent} onValueChange={setSelectedEvent}
+                    value={selectedEvent}
+                    onValueChange={setSelectedEvent}
                 >
                     <SelectTrigger className="w-[180px]">
                         <SelectValue placeholder="Select event" />
                     </SelectTrigger>
                     <SelectContent>
-                        {eventCategories.map((category) => (
-                            <SelectItem key={category} value={category}>
-                                {category}
+                        {allEventNames.map((eventName) => (
+                            <SelectItem key={eventName} value={eventName}>
+                                {eventName === "all" ? "All Events" : eventName}
                             </SelectItem>
                         ))}
                     </SelectContent>

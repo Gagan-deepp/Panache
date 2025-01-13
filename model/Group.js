@@ -1,31 +1,21 @@
 import { v4 as uuidv4 } from "uuid"
 import mongoose from "mongoose"
 
-
-const UserSchema = new mongoose.Schema({
+const GroupSchema = new mongoose.Schema({
     uuid: {
         type: String,
         required: true,
         unique: true,
-        default : uuidv4,
+        default: uuidv4,
     },
     name: {
         type: String,
-        required: [true, "Student name is required"],
+        required: [true, "Group name is required"],
         trim: true,
     },
-    rollno: {
+    leader: {
         type: String,
-        required: [true, "Roll number is required"],
-    },
-    course: {
-        type: String,
-        required: [true, "Course is required"],
-        trim: true,
-    },
-    branch: {
-        type: String,
-        required: [true, "Branch is required"],
+        required: [true, "Group leader name is required"],
         trim: true,
     },
     email: {
@@ -42,19 +32,15 @@ const UserSchema = new mongoose.Schema({
         required: true,
         match: [/^\d{10}$/, "Phone number must be 10 digits"],
     },
-    events: {
+    members: {
         type: [{
-            category: {
+            name: {
                 type: String,
-                required: [true, "Event category is required"],
-            },
-            eventName: {
-                type: String,
-                required: [true, "Event name is required"],
+                required: [true, "Member name is required"],
             },
         }],
     },
 
 }, { timestamps: true })
 
-export const User = mongoose.models.User || mongoose.model("User", UserSchema);
+export const Group = mongoose.models.Group || mongoose.model("Group", GroupSchema);

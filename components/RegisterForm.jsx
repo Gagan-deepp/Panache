@@ -19,8 +19,10 @@ const RegisterForm = () => {
         { category: '', eventName: '' },
         { category: '', eventName: '' },
         { category: '', eventName: '' },
+        { category: '', eventName: '' },
     ]);
     const eventsInitial = [
+        { category: '', eventName: '' },
         { category: '', eventName: '' },
         { category: '', eventName: '' },
         { category: '', eventName: '' },
@@ -134,9 +136,13 @@ const RegisterForm = () => {
                 </div>
             ))}
 
+            <Button type="button" onClick={() => { setEvents([...events, { category: '', eventName: '' }]) }}>
+                Add More
+            </Button>
+
             <Button type="submit" className="startup-form_btn text-bg-white" disbaled={isPending} >
                 {isPending ? 'Registering...' : 'Register'}
-               { isPending ? <Loader className='animate-spin size-6 ml-2' /> :<Send className='size-6 ml-2' />}
+                {isPending ? <Loader className='animate-spin size-6 ml-2' /> : <Send className='size-6 ml-2' />}
             </Button>
         </form>
     )
