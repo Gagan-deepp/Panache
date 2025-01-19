@@ -3,7 +3,8 @@
 @tailwind utilities;
 
 body {
-  font-family: "Ubuntu", serif
+  font-family: "Source Sans 3", serif;
+  font-weight: 400;
 }
 
 body::-webkit-scrollbar {
@@ -11,6 +12,10 @@ body::-webkit-scrollbar {
 }
 
 @layer utilities {
+
+  .flex-center {
+    @apply flex justify-center items-center;
+  }
 
   .grey_container {
     @apply w-full bg-transparent min-h-[530px] flex justify-center items-center flex-col py-10 z-10;
@@ -23,12 +28,21 @@ body::-webkit-scrollbar {
   .sub-heading {
     @apply font-medium text-[20px] sm:text-3xl text-black-2 break-words;
   }
+
   .small-heading {
     @apply font-medium text-[18px] sm:text-xl text-black-2 break-words;
   }
 
   .section_container {
-    @apply py-4 max-w-[90%] mx-auto overflow-hidden;
+    @apply py-4 max-w-[90%] mx-auto;
+  }
+
+  .profile_image {
+    @apply rounded-full w-16 h-16 ;
+  }
+
+  .card_btn{
+    @apply bg-card_clr text-white text-[0.6rem] font-normal tracking-wide rounded-xl !important;
   }
 
   /* startupform */
@@ -69,7 +83,7 @@ body::-webkit-scrollbar {
   }
 
   .tab {
-    @apply flex overflow-hidden min-h-[50px] flex-1 items-center gap-3 bg-[#202020] text-grey-1;
+    @apply flex overflow-hidden min-h-[50px] flex-1 items-center gap-3 bg-[#202020] text-grey-1 data-[state=active]:bg-[#0e0e12] data-[state=active]:text-grey-3 !important;
   }
 
   .hamBurger:before,

@@ -78,8 +78,9 @@ const RegisterForm = () => {
             }
 
             toast({
+                variant: "destructive",
                 title: 'Error',
-                description: error.message
+                description: "Unsuccessful Registration",
             })
             return {
                 ...prevState,

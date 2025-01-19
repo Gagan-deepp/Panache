@@ -74,7 +74,7 @@ const columns = [
     },
     {
         accessorKey: "uuid",
-        header: "UUID",
+        header: "Token ID",
         cell: ({ row }) => <div className="font-mono text-xs">{row.getValue("uuid")}</div>,
     },
 ]

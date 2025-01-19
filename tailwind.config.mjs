@@ -29,6 +29,7 @@ export default {
 			"black-1": "#0a0a0a",
 			"black-2": "#171717",
 			"black-3": "#1F2127",
+			"card_clr": "#3f3735",
 			"black-hover": "rgba(0, 0, 0, 0.7)",
 			black: {
 				"100": "#333333",

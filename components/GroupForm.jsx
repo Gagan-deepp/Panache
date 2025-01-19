@@ -80,8 +80,9 @@ const GroupForm = () => {
             }
 
             toast({
+                variant: "destructive",
                 title: 'Error',
-                description: error.message
+                description: "Unsuccessful Registration, Contact Admin",
             })
             return {
                 ...prevState,

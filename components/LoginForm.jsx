@@ -69,7 +69,7 @@ const LoginForm = () => {
 
             <div>
                 <label htmlFor="password" className='startup-form_label' > password </label>
-                <Input id="password" name="password" required className='startup-form_input' placeholder="Enter Password" />
+                <Input id="password" type="password" name="password" required className='startup-form_input' placeholder="Enter Password" />
                 {errors.password && <p className='startup-form_error'> {errors.password} </p>}
             </div>
 
