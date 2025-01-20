@@ -1,16 +1,16 @@
 "use client"
 
-import { z } from 'zod'
 import { useToast } from '@/hooks/use-toast'
+import { mailToStudent } from '@/lib/actions/auth'
 import { registerStudent } from '@/lib/actions/register'
 import { registerSchema } from '@/lib/validation'
 import { Loader, Send } from 'lucide-react'
 import { useActionState, useState } from 'react'
+import { z } from 'zod'
 import SelectCategory from './SelectCategory'
 import SelectEvent from './SelectEvent'
 import { Button } from './ui/button'
 import { Input } from './ui/input'
-import { mailToStudent } from '@/lib/actions/auth'
 
 const RegisterForm = () => {
 
@@ -43,14 +43,18 @@ const RegisterForm = () => {
             events.forEach((event, i) => {
                 formData.append(`category${i}`, event.category);
                 formData.append(`eventName${i}`, event.eventName);
+
+                // For Online Game
+
+                if (event.game) {
+                    formData.append(`eventGame${i}`, event.game);
+                }
             });
 
             await registerSchema.parseAsync(formValues);
             const res = await registerStudent({ formData })
 
             if (res.status === 'SUCCESS') {
-
-                await mailToStudent(formValues);
                 toast({
                     title: 'Success',
                     description: res.message
@@ -59,6 +63,7 @@ const RegisterForm = () => {
                 setErrors({});
             } else {
                 toast({
+                    variant: "destructive",
                     title: 'Fail',
                     description: res.message
                 })
@@ -136,11 +141,21 @@ const RegisterForm = () => {
                     {errors.category && <p className='startup-form_error'> {errors.category} </p>}
 
                     {event.category && (
-                        <div className='mt-4' >
-                            <label htmlFor="eventName" className='startup-form_label' > Event Name </label>
-                            <SelectEvent id={`eventName${i}`} name="category" category={event.category} events={events} setEvents={setEvents} i={i} />
-                            {errors.eventName && <p className='startup-form_error'> {errors.eventName} </p>}
-                        </div>
+                        <>
+                            <div className='mt-4' >
+                                <label htmlFor="eventName" className='startup-form_label' > Event Name </label>
+                                <SelectEvent id={`eventName${i}`} name="category" category={event.category} events={events} setEvents={setEvents} i={i} />
+                                {errors.eventName && <p className='startup-form_error'> {errors.eventName} </p>}
+                            </div>
+
+                            {event.category && event.eventName === "Online Gaming" && (
+                                <div className='mt-4' >
+                                    <label htmlFor="onlineGame" className='startup-form_label' > Select Online Game </label>
+                                    <SelectEvent id={`onlineGame`} name="game" category={event.category} events={events} setEvents={setEvents} game={true} i={i} />
+                                    {errors.eventName && <p className='startup-form_error'> {errors.eventName} </p>}
+                                </div>
+                            )}
+                        </>
                     )}
                 </div>
             ))}
@@ -153,6 +168,7 @@ const RegisterForm = () => {
                 {isPending ? 'Registering...' : 'Register'}
                 {isPending ? <Loader className='animate-spin size-6 ml-2' /> : <Send className='size-6 ml-2' />}
             </Button>
+
         </form>
     )
 }

@@ -17,6 +17,10 @@ body::-webkit-scrollbar {
     @apply flex justify-center items-center;
   }
 
+  .title_heading {
+    @apply text-black_light text-4xl font-bold;
+  }
+
   .grey_container {
     @apply w-full bg-transparent min-h-[530px] flex justify-center items-center flex-col py-10 z-10;
   }
@@ -37,11 +41,29 @@ body::-webkit-scrollbar {
     @apply py-4 max-w-[90%] mx-auto;
   }
 
-  .profile_image {
-    @apply rounded-full w-16 h-16 ;
+  .section {
+    @apply w-full bg-transparent flex gap-12 py-10 rounded-3xl mt-12;
   }
 
-  .card_btn{
+  .event_btn {
+    @apply bg-transparent border-cream_black border-2 rounded-xl transition-all duration-300 ease-in-out hover:scale-[0.9] hover:bg-cream !important;
+  }
+
+  .event_grid{
+    @apply grid grid-cols-1 gap-8 sm:grid-cols-4;
+  }
+  .event_card {
+    @apply rounded-xl border-cream_black border-2 hover:bg-cream transition-all duration-300 ease-in-out hover:scale-[0.95] cursor-pointer;
+  }
+
+  .profile_image {
+    @apply rounded-full w-16 h-16;
+  }
+  .small_circle {
+    @apply rounded-full w-10 h-10 bg-card_clr_brown transition-all duration-300 ease-in-out hover:bg-card_clr_light hover:scale-[0.9] ;
+  }
+
+  .card_btn {
     @apply bg-card_clr text-white text-[0.6rem] font-normal tracking-wide rounded-xl !important;
   }
 
@@ -80,6 +102,10 @@ body::-webkit-scrollbar {
 
   .startup-form_btn {
     @apply bg-black-3 cursor-pointer hover:bg-black-hover duration-200 transition-all border-[4px] border-black rounded-xl p-5 min-h-[70px] w-full font-bold text-[18px] !important;
+  }
+
+  .custom_tab {
+    @apply flex overflow-hidden min-h-[50px] flex-1 items-center gap-3 bg-[#202020] text-grey-1;
   }
 
   .tab {

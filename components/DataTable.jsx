@@ -6,7 +6,7 @@ import { Checkbox } from "@/components/ui/checkbox"
 import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { eventCategory, eventName } from "@/lib/data"
+import { eventCategory, eventName, onlineGames } from "@/lib/data"
 import { flexRender, getCoreRowModel, getFilteredRowModel, getPaginationRowModel, getSortedRowModel, useReactTable } from "@tanstack/react-table"
 import { ArrowUpDown, Download } from 'lucide-react'
 import { useEffect, useState, useMemo } from 'react'
@@ -73,9 +73,9 @@ const columns = [
         ),
     },
     {
-        accessorKey: "uuid",
+        accessorKey: "token",
         header: "Token ID",
-        cell: ({ row }) => <div className="font-mono text-xs">{row.getValue("uuid")}</div>,
+        cell: ({ row }) => <div className="font-mono text-xs">{row.getValue("token")}</div>,
     },
 ]
 
@@ -84,7 +84,6 @@ export const DataTable = ({ data, category }) => {
     const [columnFilters, setColumnFilters] = useState([])
     const [columnVisibility, setColumnVisibility] = useState({})
     const [rowSelection, setRowSelection] = useState({})
-    const eventCategories = eventName[category]
     const [selectedEvent, setSelectedEvent] = useState("all");
     const [pagination, setPagination] = useState({
         pageIndex: 0,
@@ -92,9 +91,17 @@ export const DataTable = ({ data, category }) => {
     })
 
     const allEventNames = useMemo(() => {
-        return category === "All"
-            ? ["all", ...Object.values(eventName).flat()]
-            : ["all", ...(eventName[category] || [])];
+        let events = ["all"];
+        if (category === "All") {
+            events = [...events, ...Object.values(eventName).flat()];
+        } else {
+            if (category === "Cyber") {
+                events = [...events, ...onlineGames];
+            }
+            events = [...events, ...(eventName[category].filter((item) => item != "Online Gaming") || [])];
+        }
+
+        return events;
     }, [category]);
 
     const filteredData = useMemo(() => {
@@ -130,7 +137,7 @@ export const DataTable = ({ data, category }) => {
             "Name": item.name,
             "Email": item.email,
             "Events": item.event.join(", "),
-            "UUID": item.uuid
+            "Token": item.token
         }));
 
         const ws = XLSX.utils.json_to_sheet(exportData);
@@ -165,7 +172,7 @@ export const DataTable = ({ data, category }) => {
                         <SelectTrigger className="w-[180px]">
                             <SelectValue placeholder="Select event" />
                         </SelectTrigger>
-                        <SelectContent>
+                        <SelectContent className="!bg-white-1" >
                             {allEventNames.map((eventName) => (
                                 <SelectItem key={eventName} value={eventName}>
                                     {eventName === "all" ? "All Events" : eventName}

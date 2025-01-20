@@ -1,13 +1,12 @@
-import { v4 as uuidv4 } from "uuid"
+import { nanoid } from "nanoid";
 import mongoose from "mongoose"
-
 
 const UserSchema = new mongoose.Schema({
     uuid: {
         type: String,
         required: true,
         unique: true,
-        default : uuidv4,
+        default: () => nanoid(8).toUpperCase(),
     },
     name: {
         type: String,
@@ -52,9 +51,13 @@ const UserSchema = new mongoose.Schema({
                 type: String,
                 required: [true, "Event name is required"],
             },
+            eventGame: {
+                type: String,
+            },
         }],
     },
 
 }, { timestamps: true })
 
+// delete mongoose.models['User']; //Replace 'User' with the model name
 export const User = mongoose.models.User || mongoose.model("User", UserSchema);

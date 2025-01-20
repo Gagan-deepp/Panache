@@ -11,7 +11,6 @@ const page = async ({ searchParams }) => {
     const group = (await searchParams).group || false;
     const eventData = !group && await fetchEventData(category)
     const groupEventData = group && category && (await fetchGroupEventData(category))
-
     return (
         <div className="section_container min-h-dvh !py-16" >
 
@@ -26,12 +25,12 @@ const page = async ({ searchParams }) => {
                     </Link>
                 </div>
 
-                <div className="tab rounded-xl" >
+                <div className="custom_tab rounded-xl" >
                     {
                         eventCategory.map((event, i) => {
                             let isActive = event.name === category && !group
                             return (
-                                <Link key={i} href={`/view?category=${event.name}`} className={`startup-card_btn tab justify-center ${isActive && "!bg-[#0e0e12] !text-grey-2"} `} >
+                                <Link key={i} href={`/view?category=${event.name}`} className={`startup-card_btn custom_tab justify-center ${isActive && "!bg-[#0e0e12] !text-grey-2"} `} >
                                     {event.name}
                                 </Link>
                             )
@@ -57,12 +56,12 @@ const page = async ({ searchParams }) => {
                     </Link>
                 </div>
 
-                <div className="tab rounded-xl" >
+                <div className="custom_tab rounded-xl" >
                     {
                         eventCategory.map((event, i) => {
                             let isActive = event.name === category && group
                             return (
-                                <Link key={i} href={`/view?category=${event.name}&group=true`} className={`startup-card_btn tab justify-center ${isActive && "!bg-[#0e0e12] !text-grey-2"} `} >
+                                <Link key={i} href={`/view?category=${event.name}&group=true`} className={`startup-card_btn custom_tab justify-center ${isActive && "!bg-[#0e0e12] !text-grey-2"} `} >
                                     {event.name}
                                 </Link>
                             )

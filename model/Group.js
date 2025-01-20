@@ -1,12 +1,12 @@
-import { v4 as uuidv4 } from "uuid"
-import mongoose from "mongoose"
+import mongoose from "mongoose";
+import { nanoid } from "nanoid";
 
 const GroupSchema = new mongoose.Schema({
     uuid: {
         type: String,
         required: true,
         unique: true,
-        default: uuidv4,
+        default: () => nanoid(8).toUpperCase(),
     },
     name: {
         type: String,
@@ -54,5 +54,6 @@ const GroupSchema = new mongoose.Schema({
     },
 
 }, { timestamps: true })
+delete mongoose.models['Group']; //Replace 'User' with the model name
 
 export const Group = mongoose.models.Group || mongoose.model("Group", GroupSchema);

@@ -85,9 +85,9 @@ const columns = [
         ),
     },
     {
-        accessorKey: "uuid",
+        accessorKey: "token",
         header: "Token ID",
-        cell: ({ row }) => <div className="font-mono text-xs">{row.getValue("uuid")}</div>,
+        cell: ({ row }) => <div className="font-mono text-xs">{row.getValue("token")}</div>,
     },
 ]
 
@@ -144,7 +144,7 @@ export const GroupDataTable = ({ data, category }) => {
             "Phone": item.phone,
             "Events": item.event.join(", "),
             "Members": item.members.join(", "),
-            "UUID": item.uuid
+            "Token": item.token
         }));
 
         const ws = XLSX.utils.json_to_sheet(exportData);
