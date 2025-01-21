@@ -1,7 +1,7 @@
 import { eventName, onlineGames } from "@/lib/data"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/select"
 
-const SelectEvent = ({ events, category, i = 0, setEvents, game = false }) => {
+const SelectEvent = ({ events, category, i = 0, setEvents, game = false, value }) => {
 
     // Events = no of event choosen
     //Category == which category student choose - on the basis of category we filter event if category previous choosen
@@ -14,7 +14,7 @@ const SelectEvent = ({ events, category, i = 0, setEvents, game = false }) => {
             : eventName[category]?.filter((event) => !selectedEvents.includes(event)) || [];
 
     return (
-        <Select onValueChange={(val) => {
+        <Select value={value} onValueChange={(val) => {
             const updatedEvents = [...events];
             if (game) {
                 updatedEvents[i].game = val

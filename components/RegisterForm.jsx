@@ -1,8 +1,8 @@
 "use client"
 
 import { useToast } from '@/hooks/use-toast'
-import { mailToStudent } from '@/lib/actions/auth'
 import { registerStudent } from '@/lib/actions/register'
+import { eventPrices } from '@/lib/data'
 import { registerSchema } from '@/lib/validation'
 import { Loader, Send } from 'lucide-react'
 import { useActionState, useEffect, useState } from 'react'
@@ -11,7 +11,6 @@ import SelectCategory from './SelectCategory'
 import SelectEvent from './SelectEvent'
 import { Button } from './ui/button'
 import { Input } from './ui/input'
-import { eventPrices } from '@/lib/data'
 
 const RegisterForm = () => {
 
@@ -20,14 +19,8 @@ const RegisterForm = () => {
     const [totalAmount, setTotalAmount] = useState(0);
     const [events, setEvents] = useState([
         { category: '', eventName: '' },
-        { category: '', eventName: '' },
-        { category: '', eventName: '' },
-        { category: '', eventName: '' },
     ]);
     const eventsInitial = [
-        { category: '', eventName: '' },
-        { category: '', eventName: '' },
-        { category: '', eventName: '' },
         { category: '', eventName: '' },
     ];
 

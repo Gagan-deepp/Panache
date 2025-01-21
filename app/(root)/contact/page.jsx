@@ -1,5 +1,4 @@
 import Team from '@/components/Team'
-import { TeamData } from '@/lib/data'
 import Image from 'next/image'
 
 const page = () => {

@@ -6,6 +6,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import MobileNavigation from './MobileNav'
 import { usePathname } from 'next/navigation'
+import NavAuth from './NavAuth'
 
 const Navbar = ({ username }) => {
 
@@ -34,10 +35,8 @@ const Navbar = ({ username }) => {
 
                     {username ? (
                         <>
-                            <Link href="/register" className={`group relative ${!"/register" === pathName && "hover:scale-[0.8]"} ${"/register" === pathName && "scale-[0.8] "}  transition-all duration-500 ease-[0.65, 0, 0.35, 1]`} >
-                                <div className={` group-hover:text-black-2`} >Registration</div>
-                                {"/register" === pathName && <motion.div layoutId='nav_circle' className='w-1 h-1 text-center bg-black-hover rounded-full  absolute -bottom-2 left-1/2' />}
-                            </Link>
+                            <NavAuth />
+                            
                             <form action={logout}>
                                 <button>
                                     Logout

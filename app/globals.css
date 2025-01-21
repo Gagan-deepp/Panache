@@ -49,18 +49,49 @@ body::-webkit-scrollbar {
     @apply bg-transparent border-cream_black border-2 rounded-xl transition-all duration-300 ease-in-out hover:scale-[0.9] hover:bg-cream !important;
   }
 
-  .event_grid{
+  .event_grid {
     @apply grid grid-cols-1 gap-8 sm:grid-cols-4;
   }
+
   .event_card {
     @apply rounded-xl border-cream_black border-2 hover:bg-cream transition-all duration-300 ease-in-out hover:scale-[0.95] cursor-pointer;
+  }
+
+  .card_grid {
+    @apply grid md:grid-cols-4 sm:grid-cols-2 gap-5;
+  }
+
+  /* startupcard */
+  .large-event-card {
+    @apply border-[5px] flex flex-col items-start justify-center border-cream_black py-6 px-5 rounded-[22px] hover:scale-[0.95] shadow-200 shadow-cream_black hover:border-cream_black hover:shadow-cream_black transition-all duration-500 hover:bg-cream;
+  }
+
+  .event-card_date {
+    @apply text-[14px] bg-grey-1 font-bold px-4 py-2 rounded-full ;
+  }
+
+  .event-card_desc {
+    @apply font-normal text-[14px] line-clamp-2 text-left text-black-100 break-all;
+  }
+
+  .event-card_img {
+    @apply w-full h-[90px] rounded-[10px] object-cover;
+  }
+
+  .event-card_btn {
+    @apply rounded-full bg-black-3 font-medium text-[12px] text-white px-5 py-3 !important;
+  }
+
+  .event-card_skeleton {
+    @apply w-full h-96 rounded-[22px] bg-zinc-400;
   }
 
   .profile_image {
     @apply rounded-full w-16 h-16;
   }
+
   .small_circle {
-    @apply rounded-full w-10 h-10 bg-card_clr_brown transition-all duration-300 ease-in-out hover:bg-card_clr_light hover:scale-[0.9] ;
+    @apply rounded-full w-10 h-10 bg-card_clr_brown transition-all duration-300 ease-in-out hover:bg-card_clr_light hover:scale-[0.9];
   }
 
   .card_btn {
