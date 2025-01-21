@@ -1,9 +1,8 @@
-import Image from 'next/image'
-import { auth } from '@/lib/actions/auth'
-import { redirect } from 'next/navigation'
 import RegisterForm from '@/components/RegisterForm'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import GroupForm from '@/components/GroupForm'
+import { auth } from '@/lib/actions/auth'
+import Image from 'next/image'
+import { redirect } from 'next/navigation'
 
 
 const page = async () => {
@@ -21,16 +20,11 @@ const page = async () => {
             <Tabs defaultValue="single" className="w-full mt-12 ">
                 <TabsList className="tab" >
                     <TabsTrigger value="single" className="tab" >Single Event</TabsTrigger>
-                    <TabsTrigger value="group" className="tab" >Group Event</TabsTrigger>
                 </TabsList>
 
                 <TabsContent value="single">
                     <h1 className='sub-heading my-8 ' > Single Person Event </h1>
                     <RegisterForm />
-                </TabsContent>
-                <TabsContent value="group">
-                    <h1 className='sub-heading my-8' > Group Event </h1>
-                    <GroupForm />
                 </TabsContent>
             </Tabs>
         </div>

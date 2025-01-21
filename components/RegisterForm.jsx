@@ -5,17 +5,19 @@ import { mailToStudent } from '@/lib/actions/auth'
 import { registerStudent } from '@/lib/actions/register'
 import { registerSchema } from '@/lib/validation'
 import { Loader, Send } from 'lucide-react'
-import { useActionState, useState } from 'react'
+import { useActionState, useEffect, useState } from 'react'
 import { z } from 'zod'
 import SelectCategory from './SelectCategory'
 import SelectEvent from './SelectEvent'
 import { Button } from './ui/button'
 import { Input } from './ui/input'
+import { eventPrices } from '@/lib/data'
 
 const RegisterForm = () => {
 
     const { toast } = useToast();
     const [errors, setErrors] = useState({})
+    const [totalAmount, setTotalAmount] = useState(0);
     const [events, setEvents] = useState([
         { category: '', eventName: '' },
         { category: '', eventName: '' },
@@ -45,11 +47,11 @@ const RegisterForm = () => {
                 formData.append(`eventName${i}`, event.eventName);
 
                 // For Online Game
-
                 if (event.game) {
                     formData.append(`eventGame${i}`, event.game);
                 }
             });
+            formData.append('amount', totalAmount);
 
             await registerSchema.parseAsync(formValues);
             const res = await registerStudent({ formData })
@@ -94,8 +96,39 @@ const RegisterForm = () => {
             }
         }
     }
-    const [state, formAction, isPending] = useActionState(handleFormSubmit, { error: "", status: "INITIAL" });
 
+    const calculateTotalAmount = (events) => {
+        return events.reduce((total, event) => {
+            let eventTotal = 0;
+
+            // Find the event price by searching through categories
+            for (const category in eventPrices) {
+                const foundEvent = eventPrices[category].find(e => e.name === event.eventName);
+                if (foundEvent) {
+                    eventTotal = foundEvent.price;
+                    break;
+                }
+            }
+
+            // Add game-specific prices if "Online Gaming" is selected
+            if (event.eventName === "Online Gaming" && event.game) {
+                for (const category in eventPrices) {
+                    const foundGame = eventPrices[category].find(e => e.name === event.game);
+                    if (foundGame) {
+                        eventTotal += foundGame.price;
+                        break;
+                    }
+                }
+            }
+
+            return total + eventTotal;
+        }, 0);
+    };
+
+    const [state, formAction, isPending] = useActionState(handleFormSubmit, { error: "", status: "INITIAL" });
+    useEffect(() => {
+        setTotalAmount(calculateTotalAmount(events));
+    }, [events]);
     return (
         <form action={formAction} className='startup-form'  >
             <div>
@@ -163,6 +196,10 @@ const RegisterForm = () => {
             <Button type="button" onClick={() => { setEvents([...events, { category: '', eventName: '' }]) }}>
                 Add More
             </Button>
+
+            <div className="mt-4">
+                <h3 className="font-semibold text-lg">Total Amount: ₹{totalAmount}</h3>
+            </div>
 
             <Button type="submit" className="startup-form_btn text-bg-white" disabled={isPending} >
                 {isPending ? 'Registering...' : 'Register'}
