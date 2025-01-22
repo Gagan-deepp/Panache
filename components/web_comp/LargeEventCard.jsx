@@ -1,17 +1,12 @@
-import { ChevronRightIcon, User } from 'lucide-react';
-import Image from 'next/image';
-import Link from 'next/link';
-import React from 'react'
+import { ChevronRightIcon } from 'lucide-react';
 import { Button } from '../ui/button';
 
 const LargeEventCard = ({ event }) => {
-    const { _createdAt, name, members, author, _id, description, image, title, category } = "Test";
+    const { category, name, date, venue, faculty, rewards, description } = event;
     return (
         <li className="large-event-card group" >
             <div className="flex">
-                <p className="event-card_date" >
-                    108/01/252
-                </p>
+                <p className="event-card_date" > {date || "Later..."} </p>
 
             </div>
 
@@ -23,24 +18,20 @@ const LargeEventCard = ({ event }) => {
             </div>
 
             <div>
-                <p className="event-card_desc" >
-                    {description || "Loream sfjbeyf sfbefy sdfeyfe sdfffsfffffffffffffff"}
-                </p>
+                <p className="event-card_desc" >{description || "Later..."}</p>
 
                 <img src="/1.png" alt="card_icon" className="event-card_img" />
             </div>
 
             <div className="flex justify-between items-center gap-3 mt-3 " >
-                <Link href={`/?search=${category?.toLowerCase()}`} className="event-card_btn" >
-                    <p className="text-16-medium !text-white-1" >
-                        {category || "Category"}
-                    </p>
-                </Link>
+                <div className="event-card_btn" >
+                    <p className="text-16-medium !text-white-1" >{category}</p>
+                </div>
 
                 <Button className="event-card_btn" asChild >
-                    <Link href={`/community/${_id}`} >
+                    <div >
                         <ChevronRightIcon />
-                    </Link>
+                    </div>
                 </Button>
             </div>
 

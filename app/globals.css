@@ -25,12 +25,16 @@ body::-webkit-scrollbar {
     @apply w-full bg-transparent min-h-[530px] flex justify-center items-center flex-col py-10 z-10;
   }
 
+  .tag {
+    @apply bg-card_clr_brown px-6 py-3 font-bold rounded-sm relative tag-tri;
+  }
+
   .heading {
     @apply uppercase bg-black-2 px-6 py-3 font-extrabold text-white sm:text-[54px] sm:leading-[64px] text-[36px] leading-[46px] max-w-5xl text-center my-5;
   }
 
   .sub-heading {
-    @apply font-medium text-[20px] sm:text-3xl text-black-2 break-words;
+    @apply font-medium text-[20px] sm:text-3xl break-words;
   }
 
   .small-heading {
@@ -44,6 +48,20 @@ body::-webkit-scrollbar {
   .section {
     @apply w-full bg-transparent flex gap-12 py-10 rounded-3xl mt-12;
   }
+
+  /* searchform */
+  .search-form {
+    @apply max-w-xl w-full min-h-[50px] bg-cream border-[3px] border-cream_black rounded-[80px] text-[15px] mt-4 px-3 flex flex-row items-center gap-5;
+  }
+
+  .search-input {
+    @apply flex-1 font-semibold placeholder:font-semibold placeholder:text-black-100 w-full bg-cream h-auto outline-none;
+  }
+
+  .search-btn {
+    @apply size-[30px] rounded-full bg-card_clr_brown flex justify-center items-center !important;
+  }
+
 
   .event_btn {
     @apply bg-transparent border-cream_black border-2 rounded-xl transition-all duration-300 ease-in-out hover:scale-[0.9] hover:bg-cream !important;
@@ -67,7 +85,7 @@ body::-webkit-scrollbar {
   }
 
   .event-card_date {
-    @apply text-[14px] bg-grey-1 font-bold px-4 py-2 rounded-full ;
+    @apply text-[14px] bg-grey-1 font-bold px-4 py-2 rounded-full;
   }
 
   .event-card_desc {
@@ -169,6 +187,10 @@ body::-webkit-scrollbar {
 
   .hamBurger:hover .inner {
     transform: scale(0);
+  }
+
+  .tag-tri {
+    @apply before:content-[''] before:absolute before:top-2 before:left-2 before:border-t-[10px] before:border-t-black before:border-r-[10px] before:border-r-transparent after:content-[''] after:absolute after:bottom-2 after:right-2 after:border-b-[10px] after:border-b-black after:border-l-[10px] after:border-l-transparent;
   }
 }
 

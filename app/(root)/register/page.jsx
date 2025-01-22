@@ -23,7 +23,6 @@ const page = async () => {
                 </TabsList>
 
                 <TabsContent value="single">
-                    <h1 className='sub-heading my-8 ' > Single Person Event </h1>
                     <RegisterForm />
                 </TabsContent>
             </Tabs>

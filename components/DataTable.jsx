@@ -131,20 +131,88 @@ export const DataTable = ({ data, category }) => {
             pagination,
         },
     })
+
     const exportToExcel = () => {
-        const exportData = filteredData.map(item => ({
+        const exportData = filteredData.map((item) => ({
             "Roll No": item.rollno,
-            "Name": item.name,
-            "Email": item.email,
-            "Events": item.event.join(", "),
-            "Token": item.token
+            Name: item.name,
+            Email: item.email,
+            Events: item.event.join(", "),
+            Token: item.token,
         }));
 
-        const ws = XLSX.utils.json_to_sheet(exportData);
         const wb = XLSX.utils.book_new();
+        const ws = XLSX.utils.json_to_sheet([]);
+
+        // Add category heading at the top
+        const heading = `Category: ${category} - Date: ${new Date().toLocaleDateString()}`;
+        XLSX.utils.sheet_add_aoa(ws, [[heading]], { origin: "A1" });
+
+        // Merge heading cells across all columns
+        const mergeRange = { s: { r: 0, c: 0 }, e: { r: 0, c: Object.keys(exportData[0]).length - 1 } };
+        ws["!merges"] = [mergeRange];
+
+        // Add table headers (Row 2)
+        XLSX.utils.sheet_add_aoa(ws, [Object.keys(exportData[0])], { origin: "A2" });
+
+        // Add the data starting from Row 3
+        XLSX.utils.sheet_add_json(ws, exportData, { origin: "A3", skipHeader: true });
+
+        // Styling: Use cell styles (Category Heading + Headers)
+        ws["A1"].s = {
+            font: { bold: true, sz: 14 }, // Bold, larger font size for category
+            alignment: { horizontal: "center" }, // Center-align the heading
+        };
+
+        const headerStyle = {
+            font: { bold: true }, // Bold font for headers
+            alignment: { horizontal: "center" }, // Optional: Center-align headers
+        };
+
+        const headerRange = XLSX.utils.decode_range(ws["!ref"]);
+        for (let C = headerRange.s.c; C <= headerRange.e.c; ++C) {
+            const headerCell = XLSX.utils.encode_cell({ r: 1, c: C }); // Headers are in row 2 (r: 1)
+            if (ws[headerCell]) {
+                ws[headerCell].s = headerStyle;
+            }
+        }
+
+        // Auto-size columns for better visibility
+        const colWidths = Object.keys(exportData[0]).map((key) => ({
+            wch: Math.max(key.length, ...exportData.map((row) => String(row[key]).length)),
+        }));
+        ws["!cols"] = colWidths;
+
+        // Append sheet to workbook
         XLSX.utils.book_append_sheet(wb, ws, "Students");
-        XLSX.writeFile(wb, `students_data_${category}_${selectedEvent}.xlsx`);
+
+        // Generate and download the Excel file
+        const wbout = XLSX.write(wb, { bookType: "xlsx", type: "array" });
+        const blob = new Blob([wbout], { type: "application/octet-stream" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = `students_data_${category}_${selectedEvent}.xlsx`;
+        a.click();
+        URL.revokeObjectURL(url);
     };
+
+
+
+    // const exportToExcel = () => {
+    //     const exportData = filteredData.map(item => ({
+    //         "Roll No": item.rollno,
+    //         "Name": item.name,
+    //         "Email": item.email,
+    //         "Events": item.event.join(", "),
+    //         "Token": item.token
+    //     }));
+
+    //     const ws = XLSX.utils.json_to_sheet(exportData);
+    //     const wb = XLSX.utils.book_new();
+    //     XLSX.utils.book_append_sheet(wb, ws, "Students");
+    //     XLSX.writeFile(wb, `students_data_${category}_${selectedEvent}.xlsx`);
+    // };
     useEffect(() => {
         table.setPageIndex(0);
     }, [selectedEvent]);
