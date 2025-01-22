@@ -17,7 +17,7 @@ const SelectEvent = ({ events, category, i = 0, setEvents, game = false, value }
         <Select value={value} onValueChange={(val) => {
             const updatedEvents = [...events];
             if (game) {
-                updatedEvents[i].game = val
+                updatedEvents[i].eventGame = val
             } else {
                 updatedEvents[i].eventName = val;
             }

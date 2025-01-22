@@ -35,15 +35,7 @@ const RegisterForm = () => {
                 phone: formData.get("phone"),
                 events: events,
             }
-            events.forEach((event, i) => {
-                formData.append(`category${i}`, event.category);
-                formData.append(`eventName${i}`, event.eventName);
-
-                // For Online Game
-                if (event.game) {
-                    formData.append(`eventGame${i}`, event.game);
-                }
-            });
+            formData.append('events', JSON.stringify(events));
             formData.append('amount', totalAmount);
 
             await registerSchema.parseAsync(formValues);
@@ -104,9 +96,9 @@ const RegisterForm = () => {
             }
 
             // Add game-specific prices if "Online Gaming" is selected
-            if (event.eventName === "Online Gaming" && event.game) {
+            if (event.eventName === "Online Gaming" && event.eventGame) {
                 for (const category in eventPrices) {
-                    const foundGame = eventPrices[category].find(e => e.name === event.game);
+                    const foundGame = eventPrices[category].find(e => e.name === event.eventGame);
                     if (foundGame) {
                         eventTotal += foundGame.price;
                         break;
