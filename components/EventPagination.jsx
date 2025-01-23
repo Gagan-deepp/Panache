@@ -27,8 +27,8 @@ export const EventPagination = ({ events }) => {
         <>
             <div className="card_grid mt-8">
                 {currentEvents.map((event) => (
-                    <Dialog key={event.name} className="mt-8">
-                        <DialogTrigger asChild className="w-full h-full">
+                    <Dialog key={event.name} className="mt-8 cursor-pointer">
+                        <DialogTrigger className="w-full h-full">
                             <LargeEventCard event={event} />
                         </DialogTrigger>
                         <DialogContent>
