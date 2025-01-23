@@ -81,9 +81,8 @@ const page = () => {
 
                 <Tabs defaultValue="day1" className="flex flex-col">
                     <TabsList className="tab" >
-                        <TabsTrigger value="day1" className="tab" >Day 1</TabsTrigger>
-                        <TabsTrigger value="day2" className="tab" >Day 2</TabsTrigger>
-                        <TabsTrigger value="day3" className="tab" >Day 3</TabsTrigger>
+                        <TabsTrigger value="day1" className="tab" >January</TabsTrigger>
+                        <TabsTrigger value="day2" className="tab" >February</TabsTrigger>
                     </TabsList>
 
                     <TabsContent value="day1">
@@ -92,11 +91,6 @@ const page = () => {
                         </div>
                     </TabsContent>
                     <TabsContent value="day2">
-                        <div className="w-full my-8">
-                            <Timeline data={data} />
-                        </div>
-                    </TabsContent>
-                    <TabsContent value="day3">
                         <div className="w-full my-8">
                             <Timeline data={data} />
                         </div>

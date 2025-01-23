@@ -43,6 +43,7 @@ const RegisterForm = () => {
 
             if (res.status === 'SUCCESS') {
                 toast({
+                    variant : "success",
                     title: 'Success',
                     description: res.message
                 })
