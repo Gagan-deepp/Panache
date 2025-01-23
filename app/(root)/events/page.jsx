@@ -35,25 +35,23 @@ const page = async ({ searchParams }) => {
 
                 <SearchForm search={search} />
             </section>
-            <Dialog >
-                <div className="card_grid" >
-                    {
-                        (searchData ? searchData : eventData).map((event) => {
-                            return (
-                                <div key={event.name} className="mt-8" >
-                                    <DialogTrigger className="w-full h-full" >
-                                        <LargeEventCard event={event} />
-                                    </DialogTrigger>
-                                    <DialogContent>
-                                        <DialogTitle className="text-2xl font-bold">{event.name}</DialogTitle>
-                                        <EventContent event={event} />
-                                    </DialogContent>
-                                </div>
-                            )
-                        })
-                    }
-                </div>
-            </Dialog>
+            <div className="card_grid mt-8" >
+                {
+                    (searchData ? searchData : eventData).map((event) => {
+                        return (
+                            <Dialog key={event.name} className="mt-8" >
+                                <DialogTrigger asChild className="w-full h-full" >
+                                    <LargeEventCard event={event} />
+                                </DialogTrigger>
+                                <DialogContent>
+                                    <DialogTitle className="text-2xl font-bold">{event.name}</DialogTitle>
+                                    <EventContent event={event} />
+                                </DialogContent>
+                            </Dialog>
+                        )
+                    })
+                }
+            </div>
         </div>
     )
 }
