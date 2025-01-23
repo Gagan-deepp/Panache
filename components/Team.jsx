@@ -27,11 +27,11 @@ const Team = () => {
                                 <h2 className="sub-heading !text-4xl" > {team.role} </h2>
                             </div>
                             <div className="flex justify-start sm:justify-evenly flex-wrap items-start gap-4 w-full py-10 sm:py-24" >
-                                {team?.users?.map((member, ind) => {
+                                {team?.users?.map((member) => {
                                     return (
                                         <div key={member.name} className="bg-[#ddcecb] px-4 py-6 rounded-xl flex-center flex-col gap-3 min-w-[10rem]" >
                                             <div className="relative profile_image" >
-                                                <Image src={`https://drive.google.com/uc?id=${member.image}` || "/team/cyber-1.png"} alt={member.name} fill={true} className="object-cover rounded-full saturate-150" />
+                                                <Image src={`https://drive.google.com/uc?id=${member.image}` || "/team/cyber-1.png"} alt={member.name} fill={true} className={`object-cover rounded-xl saturate-150 ${((team.role === "Cultural") || (team.role === "Leadership")) && "object-top"} `} />
                                             </div>
                                             <div className="flex-center flex-col" >
                                                 <h3 className="font-medium" > {member.name} </h3>

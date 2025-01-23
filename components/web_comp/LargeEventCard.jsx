@@ -1,5 +1,6 @@
 import { ChevronRightIcon } from 'lucide-react';
 import { Button } from '../ui/button';
+import Image from 'next/image';
 
 const LargeEventCard = ({ event }) => {
     const { category, name, date, venue, faculty, rewards, description } = event;
@@ -19,8 +20,10 @@ const LargeEventCard = ({ event }) => {
 
             <div>
                 <p className="event-card_desc" >{description || "Later..."}</p>
-
-                <img src="/1.png" alt="card_icon" className="event-card_img" />
+                <div className='event-card_img relative overflow-hidden' >
+                    <Image src={`https://drive.google.com/uc?id=${event.image}` || "/1.png"} alt={event.name} fill={true} className="object-cover" />
+                </div>
+                {/* <img src="/1.png" alt="card_icon" className="event-card_img" /> */}
             </div>
 
             <div className="flex justify-between items-center gap-3 mt-3 " >

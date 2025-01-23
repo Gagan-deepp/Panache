@@ -105,7 +105,7 @@ body::-webkit-scrollbar {
   }
 
   .profile_image {
-    @apply rounded-full w-16 h-16;
+    @apply rounded-xl w-16 h-16 flex justify-center items-center ;
   }
 
   .small_circle {

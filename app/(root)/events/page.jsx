@@ -1,11 +1,8 @@
-import EventCard from "@/components/EventCard"
-import EventContent from "@/components/EventContent"
 import SearchForm from "@/components/SearchForm"
-import { Dialog, DialogContent, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
-import LargeEventCard from '@/components/web_comp/LargeEventCard'
-import { filterEvent } from "@/lib/actions/Events"
 import { eventData } from '@/lib/eventData'
 import Image from 'next/image'
+import { EventPagination } from "@/components/EventPagination"
+
 
 const page = async ({ searchParams }) => {
     const search = (await searchParams).search || null
@@ -25,7 +22,8 @@ const page = async ({ searchParams }) => {
             );
         });
     };
-    const searchData = search && filterEvent(search)
+    const filteredEvents = search ? filterEvent(search) : eventData
+
     return (
         <div className="section_container min-h-dvh" >
             <section className="grey_container !min-h-[330px]  rounded-3xl relative mt-12" >
@@ -35,23 +33,7 @@ const page = async ({ searchParams }) => {
 
                 <SearchForm search={search} />
             </section>
-            <div className="card_grid mt-8" >
-                {
-                    (searchData ? searchData : eventData).map((event) => {
-                        return (
-                            <Dialog key={event.name} className="mt-8" >
-                                <DialogTrigger asChild className="w-full h-full" >
-                                    <LargeEventCard event={event} />
-                                </DialogTrigger>
-                                <DialogContent>
-                                    <DialogTitle className="text-2xl font-bold">{event.name}</DialogTitle>
-                                    <EventContent event={event} />
-                                </DialogContent>
-                            </Dialog>
-                        )
-                    })
-                }
-            </div>
+            <EventPagination events={filteredEvents} />
         </div>
     )
 }
