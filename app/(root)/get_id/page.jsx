@@ -1,4 +1,5 @@
 'use client'
+import { updateExistingData } from "@/lib/actions/register";
 import { useState } from "react";
 
 const page = () => {
@@ -16,6 +17,10 @@ const page = () => {
   const handleInputChange = (event) => {
     setDriveLink(event.target.value);
   };
+
+  const handleUpdate = async () => {
+    await updateExistingData()
+  }
 
   // Function to handle the extract button click
   const handleExtractClick = () => {
@@ -58,6 +63,12 @@ const page = () => {
         className="bg-blue-500 text-white p-2 rounded ml-2"
       >
         Extract ID
+      </button>
+      <button
+        onClick={handleUpdate}
+        className="bg-blue-500 text-white p-2 rounded ml-2"
+      >
+        Update User
       </button>
 
       {/* Display extracted file ID */}

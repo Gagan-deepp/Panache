@@ -1,7 +1,9 @@
 import { popular } from "@/lib/data"
-import { Button } from "../ui/button"
 import Link from "next/link"
-import EventCard from "../EventCard"
+import { Button } from "../ui/button"
+import LargeEventCard from "./LargeEventCard"
+import { Dialog, DialogContent, DialogTitle, DialogTrigger } from "../ui/dialog"
+import EventContent from "../EventContent"
 
 const Events = () => {
   return (
@@ -15,10 +17,18 @@ const Events = () => {
           <em className="text-sm" > A Journey Through Fun, Friendship, and Festivity Awaits – Let’s Make It Memorable Together! </em>
         </div>
 
-        <div className="event_grid w-[90%] mx-auto " >
+        <div className="event_grid mx-auto " >
           {popular.map((event) => {
             return (
-              <EventCard key={event.name} event={event} />
+              <Dialog key={event.name} className="mt-8 cursor-pointer">
+                <DialogTrigger className="w-full h-full">
+                  <LargeEventCard event={event} />
+                </DialogTrigger>
+                <DialogContent>
+                  <DialogTitle className="text-2xl font-bold">{event.name}</DialogTitle>
+                  <EventContent event={event} />
+                </DialogContent>
+              </Dialog>
             )
           })}
         </div>

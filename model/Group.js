@@ -40,6 +40,10 @@ const GroupSchema = new mongoose.Schema({
             },
         }],
     },
+    verification: {
+        type: Boolean,
+        default: false,
+    },
     event: {
         type: [{
             category: {
