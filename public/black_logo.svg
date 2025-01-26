@@ -6,11 +6,11 @@
       }
 
       .cls-3, .cls-4, .cls-5, .cls-6 {
-        fill:rgb(255, 255, 255);
+        fill: #1F2127;
       }
 
       .cls-3, .cls-2 {
-        stroke:rgb(255, 255, 255);
+        stroke: #1F2127;
         stroke-miterlimit: 10;
       }
 

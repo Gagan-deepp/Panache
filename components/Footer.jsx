@@ -9,7 +9,7 @@ const Footer = () => {
             <div className='w-[90%] mx-auto flex flex-col items-center justify-center pt-10 pb-4 gap-4' >
                 <div className='flex flex-col gap-4 w-full items-center justify-center' >
                     <Link href="/" className='text-2xl uppercase ' >
-                        <Image src="/logo.svg" width={130} height={50} quality={100} alt='logo' />
+                        <Image src="/black_logo.svg" width={130} height={50} quality={100} alt='logo' />
                     </Link>
                     <div className='flex gap-5 mt-2 flex-wrap' >
                         {navData.map((item) => (

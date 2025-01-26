@@ -43,7 +43,7 @@ const RegisterForm = () => {
 
             if (res.status === 'SUCCESS') {
                 toast({
-                    variant : "success",
+                    variant: "success",
                     title: 'Success',
                     description: res.message
                 })
@@ -89,17 +89,26 @@ const RegisterForm = () => {
 
             // Find the event price by searching through categories
             for (const category in eventPrices) {
-                const foundEvent = eventPrices[category].find(e => e.name === event.eventName);
+                const foundEvent = eventPrices[category].find((e) => e.name === event.eventName);
                 if (foundEvent) {
                     eventTotal = foundEvent.price;
                     break;
                 }
+
+                // Handle arm wrestling dynamic naming
+                if (event.eventName.startsWith("Arm Wrestling - ")) {
+                    const foundArmEvent = eventPrices[category].find((e) => e.name === "Arm Wrestling");
+                    if (foundArmEvent) {
+                        eventTotal = foundArmEvent.price;
+                        break;
+                    }
+                }
             }
 
-            // Add game-specific prices if "Online Gaming" is selected
+            //"Online Gaming" is selected
             if (event.eventName === "Online Gaming" && event.eventGame) {
                 for (const category in eventPrices) {
-                    const foundGame = eventPrices[category].find(e => e.name === event.eventGame);
+                    const foundGame = eventPrices[category].find((e) => e.name === event.eventGame);
                     if (foundGame) {
                         eventTotal += foundGame.price;
                         break;
@@ -111,45 +120,41 @@ const RegisterForm = () => {
         }, 0);
     };
 
+
     const [state, formAction, isPending] = useActionState(handleFormSubmit, { error: "", status: "INITIAL" });
     useEffect(() => {
+        console.log("EVENTSS : ", events)
         setTotalAmount(calculateTotalAmount(events));
     }, [events]);
     return (
         <form action={formAction} className='startup-form'  >
             <div>
-                <label htmlFor="name" className='startup-form_label' > Student Name </label>
-                <Input id="name" name="name" required className='startup-form_input' placeholder="Enter Student name" />
+                <Input id="name" name="name" required className='startup-form_input' label="Enter Student Name" placeholder="Enter Student name" />
                 {errors.name && <p className='startup-form_error'> {errors.name} </p>}
             </div>
 
             <div>
-                <label htmlFor="rollno" className='startup-form_label' > Student RollNo </label>
-                <Input id="rollno" name="rollno" required className='startup-form_input' placeholder="Enter Student Roll No" />
+                <Input id="rollno" name="rollno" required label="Student RollNo" className='startup-form_input' placeholder="2101450100044" />
                 {errors.rollno && <p className='startup-form_error'> {errors.rollno} </p>}
             </div>
 
             <div className='flex justify-between items-center flex-wrap gap-4' >
                 <div>
-                    <label htmlFor="Course" className='startup-form_label' > Student Course </label>
-                    <Input id="course" name="course" required className='startup-form_input' placeholder="Enter course" />
+                    <Input id="course" name="course" required label="Student Course" className='startup-form_input' placeholder="Btech" />
                     {errors.course && <p className='startup-form_error'> {errors.course} </p>}
                 </div>
                 <div>
-                    <label htmlFor="branch" className='startup-form_label' > Branch </label>
-                    <Input id="branch" name="branch" required className='startup-form_input' placeholder="Enter branch" />
+                    <Input id="branch" name="branch" required label="Student Branch" className='startup-form_input' placeholder="CSE - AI/ML" />
                     {errors.branch && <p className='startup-form_error'> {errors.branch} </p>}
                 </div>
             </div>
 
             <div>
-                <label htmlFor="email" className='startup-form_label' > Student Email Address </label>
-                <Input id="email" name="email" required className='startup-form_input' placeholder="Enter email" />
+                <Input id="email" name="email" required label="Student Email" className='startup-form_input' placeholder="abc@gmail.com" />
                 {errors.email && <p className='startup-form_error'> {errors.email} </p>}
             </div>
             <div>
-                <label htmlFor="phone" className='startup-form_label' > Student Phone Number </label>
-                <Input id="phone" name="phone" required className='startup-form_input' placeholder="Enter phone" />
+                <Input id="phone" name="phone" required label="Student Phone Number" className='startup-form_input' placeholder="9865*******" />
                 {errors.phone && <p className='startup-form_error'> {errors.phone} </p>}
             </div>
 
@@ -174,12 +179,19 @@ const RegisterForm = () => {
                                     {errors.eventName && <p className='startup-form_error'> {errors.eventName} </p>}
                                 </div>
                             )}
+                            {event.category && event.eventName?.startsWith("Arm Wrestling") && (
+                                <div className='mt-4' >
+                                    <label htmlFor="arm_wrestle" className='startup-form_label' > Select Weight Category </label>
+                                    <SelectEvent id={`arm_wrestle`} name="arm_wrestle" category={event.category} events={events} setEvents={setEvents} arm={true} i={i} />
+                                    {errors.eventName && <p className='startup-form_error'> {errors.eventName} </p>}
+                                </div>
+                            )}
                         </>
                     )}
                 </div>
             ))}
 
-            <Button type="button" onClick={() => { setEvents([...events, { category: '', eventName: '' }]) }}>
+            <Button type="button" className="btn w-fit" onClick={() => { setEvents([...events, { category: '', eventName: '' }]) }}>
                 Add More
             </Button>
 
@@ -187,7 +199,7 @@ const RegisterForm = () => {
                 <h3 className="font-semibold text-lg">Total Amount: ₹{totalAmount}</h3>
             </div>
 
-            <Button type="submit" className="startup-form_btn text-bg-white" disabled={isPending} >
+            <Button type="submit" className="btn px-4 py-6 text-[16px] text-black-2 font-semibold" disabled={isPending} >
                 {isPending ? 'Registering...' : 'Register'}
                 {isPending ? <Loader className='animate-spin size-6 ml-2' /> : <Send className='size-6 ml-2' />}
             </Button>

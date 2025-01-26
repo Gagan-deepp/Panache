@@ -11,8 +11,8 @@ const Events = () => {
       <div className="flex flex-col gap-10 w-full" >
         <div className="flex flex-col gap-4" >
           <div className="flex gap-2 items-center flex-row-reverse sm:flex-row" >
-            <h1 className="title_heading uppercase " > Discover The Events </h1>
-            <div className="h-1 w-8 bg-black_light rounded-xl" />
+            <h1 className="title_heading uppercase textColor" > Discover The Events </h1>
+            <div className="h-1 w-8 bg-black_light rounded-xl main_bg" />
           </div>
           <em className="text-sm" > A Journey Through Fun, Friendship, and Festivity Awaits – Let’s Make It Memorable Together! </em>
         </div>
@@ -34,7 +34,7 @@ const Events = () => {
         </div>
 
         <div className="w-full text-center" >
-          <Button className="bg-card_clr text-cream hover:scale-[0.9] hover:bg-card_clr_light transition-all duration-200 ease-in-out " >
+          <Button className="event-card_btn" >
             <Link href="/events" className="" >
               All Events
             </Link>

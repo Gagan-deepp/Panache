@@ -7,8 +7,8 @@ const Second = () => {
 
                 <div className="w-full flex flex-col gap-8 py-4 " >
                     <div className="flex gap-2 items-center" >
-                        <div className="h-1 w-8 bg-black_light rounded-xl" />
-                        <h1 className="title_heading uppercase " > About SRGI </h1>
+                        <div className="h-1 w-8 main_bg rounded-xl" />
+                        <h1 className="title_heading uppercase textColor" > About SRGI </h1>
                     </div>
 
                     <div className="flex flex-col gap-4" >
@@ -29,8 +29,8 @@ const Second = () => {
 
                 <div className="w-full flex flex-col gap-8 py-4 " >
                     <div className="flex gap-2 items-center" >
-                        <div className="h-1 w-8 bg-black_light rounded-xl" />
-                        <h1 className="title_heading uppercase " > About SRGI </h1>
+                        <div className="h-1 w-8 main_bg rounded-xl" />
+                        <h1 className="title_heading uppercase textColor" > About PANACHE </h1>
                     </div>
 
                     <div className="flex flex-col gap-4" >

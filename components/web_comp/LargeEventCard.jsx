@@ -7,7 +7,7 @@ const LargeEventCard = ({ event }) => {
     return (
         <li className="large-event-card group" >
             <div className="flex">
-                <p className="event-card_date" > {date || "Later..."} </p>
+                <p className="event-card_btn" > {date || "Later..."} </p>
 
             </div>
 
@@ -26,9 +26,9 @@ const LargeEventCard = ({ event }) => {
                 {/* <img src="/1.png" alt="card_icon" className="event-card_img" /> */}
             </div>
 
-            <div className="flex justify-between items-center gap-3 mt-3 " >
+            <div className="flex justify-between items-center gap-3 mt-3 w-full" >
                 <div className="event-card_btn" >
-                    <p className="text-16-medium !text-white-1" >{category}</p>
+                    <p className="text-16-medium" >{category}</p>
                 </div>
 
                 <Button className="event-card_btn" asChild >
