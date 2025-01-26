@@ -9,7 +9,7 @@ const SearchForm = ({ search }) => {
                 name="search"
                 defaultValue={search}
                 className="search-input"
-                placeholder="Search Communities..."
+                placeholder="Search Events..."
             />
 
             <div className="flex gap-2" >

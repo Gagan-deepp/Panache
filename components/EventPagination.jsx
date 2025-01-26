@@ -48,7 +48,7 @@ export const EventPagination = ({ events }) => {
                     </PaginationItem>
                     {[...Array(totalPages)].map((_, index) => (
                         <PaginationItem key={index}>
-                            <PaginationLink onClick={() => setCurrentPage(index + 1)} isActive={currentPage === index + 1}>
+                            <PaginationLink onClick={() => setCurrentPage(index + 1)} isActive={currentPage === index + 1} className="cursor-pointer" >
                                 {index + 1}
                             </PaginationLink>
                         </PaginationItem>

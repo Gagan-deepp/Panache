@@ -20,7 +20,7 @@ const Second = () => {
                 </div>
 
                 <div className="relative w-full aspect-square rounded-xl " >
-                    <Image src="/1.png" fill={true} className="object-cover rounded-xl" alt="banner" />
+                    <Image src="/srgi.avif" fill={true} className="object-cover rounded-xl" alt="banner" />
                 </div>
             </section>
 
@@ -34,15 +34,17 @@ const Second = () => {
                     </div>
 
                     <div className="flex flex-col gap-4" >
-                        SRGI aims to emerge as a center of excellence of national and global repute, fostering innovation and nurturing young minds to excel in their chosen fields while contributing meaningfully to society and industry.
+                        Panache is the ultimate celebration of talent, innovation, and creativity! It’s more than just a college fest—it's a vibrant platform where minds meet, ideas collide, and memories are created.
+                        With an exciting mix of cyber events, cultural showcases, technical challenges, and general events, Panache offers something for everyone.
+
                         <span>
-                            SRGI is dedicated to empowering students by providing quality education, a multidisciplinary platform, and a dynamic learning environment. The institution focuses on building professional competence, enhancing employability, and meeting global standards through continuous improvement in teaching methodologies and industry-aligned programs.
+                            Join us to experience the energy, the thrill, and the spirit of togetherness as we celebrate excellence and diversity. Panache is where the ordinary transforms into the extraordinary. Stay tuned and be part of the legacy!
                         </span>
                     </div>
                 </div>
 
                 <div className="relative w-full aspect-square rounded-xl " >
-                    <Image src="/1.png" fill={true} className="object-cover rounded-xl" alt="banner" />
+                    <Image src="/panache.jpg" fill={true} className="object-cover rounded-xl" alt="banner" />
                 </div>
             </section>
         </div>
