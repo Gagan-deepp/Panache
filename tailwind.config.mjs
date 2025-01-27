@@ -25,6 +25,7 @@ export default {
 			"grey-2": "#e1e1e1",
 			"grey-3": "#ececec",
 			"black_light": "#595552",
+			"bg_dot": "#FBDA61",
 			"black-1": "#0a0a0a",
 			"black-2": "#171717",
 			"black-3": "#1F2127",

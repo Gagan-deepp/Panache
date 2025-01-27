@@ -186,7 +186,7 @@ const page = () => {
     return (
         <div className="section_container min-h-dvh" >
             <section className="grey_container !min-h-[330px]  rounded-3xl relative mt-12" >
-                <Image src="/1.png" alt="background" fill={true} className=" !z-[-1] rounded-3xl opacity-[0.6] object-cover" quality={100} />
+                <Image src="/schedule.jpeg" alt="background" fill={true} className=" !z-[-1] rounded-3xl opacity-[0.6] object-cover" quality={100} />
                 <h1 className="heading"> Event Schedule </h1>
                 <h3 className="sub-heading tag !text-lg"> Stay Tuned, Stay Thrilled – Here's the Line-Up! </h3>
             </section>

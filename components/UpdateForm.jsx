@@ -89,7 +89,7 @@ const UpdateForm = () => {
           title: 'Success',
           description: res.message
         })
-        router.push(`/update`)
+        setStudent(null)
       } else {
         toast({
           variant: "destructive",

@@ -1,15 +1,18 @@
 "use client"
 
+import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Input } from "@/components/ui/input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { eventName, onlineGames } from "@/lib/data";
+import { cn, formatDate } from '@/lib/utils';
+import { flexRender, getCoreRowModel, getFilteredRowModel, getPaginationRowModel, getSortedRowModel, useReactTable } from "@tanstack/react-table";
+import { ArrowUpDown, CalendarIcon, Download } from 'lucide-react';
+import { useEffect, useMemo, useState } from 'react';
 import * as XLSX from 'xlsx';
-import { Button } from "@/components/ui/button"
-import { Checkbox } from "@/components/ui/checkbox"
-import { Input } from "@/components/ui/input"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { eventCategory, eventName, onlineGames } from "@/lib/data"
-import { flexRender, getCoreRowModel, getFilteredRowModel, getPaginationRowModel, getSortedRowModel, useReactTable } from "@tanstack/react-table"
-import { ArrowUpDown, Download } from 'lucide-react'
-import { useEffect, useState, useMemo } from 'react'
+import { Calendar } from './ui/calendar';
+import { Popover, PopoverContent, PopoverTrigger } from './ui/popover';
 
 const columns = [
     {
@@ -85,6 +88,9 @@ export const DataTable = ({ data, category }) => {
     const [columnVisibility, setColumnVisibility] = useState({})
     const [rowSelection, setRowSelection] = useState({})
     const [selectedEvent, setSelectedEvent] = useState("all");
+    const [selectedDate, setSelectedDate] = useState(null)
+    const [searchTerm, setSearchTerm] = useState("")
+    const [calendarOpen, setCalendarOpen] = useState(false)
     const [pagination, setPagination] = useState({
         pageIndex: 0,
         pageSize: 20,
@@ -105,11 +111,28 @@ export const DataTable = ({ data, category }) => {
     }, [category]);
 
     const filteredData = useMemo(() => {
-        if (selectedEvent === "all") {
-            return data;
+        let filtered = data
+        if (selectedEvent !== "all") {
+            filtered = filtered.filter((item) => item.events.some((event) => event.eventName === selectedEvent))
         }
-        return data.filter(item => item.event.includes(selectedEvent));
-    }, [data, selectedEvent]);
+        if (selectedDate) {
+
+            console.log("SELECTED DATE : ", selectedDate.toISOString().split("T")[0])
+            filtered = filtered.filter((item) => {
+                // console.log("ITEMMMM : ", item.createdAt.split("T")[0])
+                // console.log("SELECTED DATE : ", selectedDate.toISOString().split("T")[0])
+                return item.createdAt.split("T")[0] === selectedDate.toISOString().split("T")[0]
+            })
+        }
+        if (searchTerm) {
+            filtered = filtered.filter(
+                (item) =>
+                    item.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                    item.email.toLowerCase().includes(searchTerm.toLowerCase()),
+            )
+        }
+        return filtered
+    }, [selectedEvent, selectedDate, searchTerm])
 
     const table = useReactTable({
         data: filteredData,
@@ -197,8 +220,6 @@ export const DataTable = ({ data, category }) => {
         URL.revokeObjectURL(url);
     };
 
-
-
     // const exportToExcel = () => {
     //     const exportData = filteredData.map(item => ({
     //         "Roll No": item.rollno,
@@ -219,8 +240,12 @@ export const DataTable = ({ data, category }) => {
 
     return (
         <div className="w-full">
+
+            <h3 className="small-heading" > {category} Details - {selectedDate && selectedDate.toISOString().split("T")[0]}  </h3>
+
             <div className="flex items-center justify-between py-4 flex-wrap gap-5">
                 <Input
+                    label="Enter name"
                     placeholder="Filter names..."
                     value={(table.getColumn("name")?.getFilterValue() ?? "")}
                     onChange={(event) =>
@@ -228,11 +253,41 @@ export const DataTable = ({ data, category }) => {
                     }
                     className="max-w-sm"
                 />
-                <div className='flex gap-5' >
+                <div className='flex gap-5 flex-wrap' >
                     <Button onClick={exportToExcel} >
                         <Download className="mr-2 h-4 w-4" />
                         Export to Excel
                     </Button>
+
+                    <Popover>
+                        <PopoverTrigger asChild>
+                            <Button variant={"outline"} className={cn("justify-start text-left font-normal", !selectedDate && "text-muted-foreground")}>
+                                <CalendarIcon className="mr-2 h-4 w-4" />
+                                {selectedDate ? formatDate(selectedDate) : <span>Pick a date</span>}
+                            </Button>
+                        </PopoverTrigger>
+                        <PopoverContent className="w-auto p-0" align="start">
+                            <Calendar
+                                className="bg-white"
+                                mode="single"
+                                selected={selectedDate}
+                                onSelect={(date) => {
+                                    if (date) {
+                                        const adjustedDate = new Date(date.getTime() - date.getTimezoneOffset() * 60000)
+                                        setSelectedDate(adjustedDate)
+                                    } else {
+                                        setSelectedDate(null)
+                                    }
+                                    setCalendarOpen(false)
+                                }}
+                                initialFocus
+                                toDate={new Date()}
+                                fromDate={new Date(2023, 0, 1)} // Adjust this date as needed
+                                disabled={(date) => date > new Date() || date < new Date("2023-01-01")}
+                            />
+                        </PopoverContent>
+                    </Popover>
+
                     <Select
                         value={selectedEvent}
                         onValueChange={setSelectedEvent}

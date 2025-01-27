@@ -40,7 +40,7 @@ const Navbar = ({ username }) => {
                         const isActive = item.link === pathName;
                         return (
                             <Link href={item.link} key={item.title} className={`group relative ${!isActive && "hover:scale-[0.8]"} ${isActive && "scale-[0.8] "}  transition-all duration-500 ease-[0.65, 0, 0.35, 1] ${scrolled || pathName != "/" ? "text-black-3" : "text-white-1"}`} >
-                                <div className={`  ${scrolled || pathName != "/" ? "group-hover:text-black-3/60" : "group-hover:text-white/60"} `} >
+                                <div className={`  ${scrolled || pathName != "/" ? "group-hover:text-black-3/60" : "group-hover:text-white/60"} font-semibold`} >
                                     {item.title}
                                 </div>
                                 {isActive && <motion.div layoutId='nav_circle' className='w-1 h-1 text-center bg-black-hover rounded-full  absolute -bottom-2 left-1/2' />}
@@ -53,13 +53,13 @@ const Navbar = ({ username }) => {
                             <NavAuth pathName={pathName} scrolled={scrolled} />
 
                             <form action={logout}>
-                                <button className={`${scrolled || pathName != "/" ? "text-black-3" : "text-white-1"} group relative hover:scale-[0.8] transition-all duration-500 ease-[0.65, 0, 0.35, 1] `} >
+                                <button className={`${scrolled || pathName != "/" ? "text-black-3" : "text-white-1"} group relative hover:scale-[0.8] transition-all duration-500 ease-[0.65, 0, 0.35, 1]  font-semibold`} >
                                     Logout
                                 </button>
                             </form>
                         </>) : (
                         <>
-                            <Link className={`${scrolled || pathName != "/" ? "text-black-3" : "text-white-1"}`} href="/login" > Login </Link>
+                            <Link className={`${scrolled || pathName != "/" ? "text-black-3" : "text-white-1"} font-semibold`} href="/login" > Login </Link>
                         </>
                     )}
                 </div>

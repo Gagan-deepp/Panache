@@ -5,9 +5,9 @@ const NavAuth = ({ scrolled, pathName }) => {
         <NavigationMenu>
             <NavigationMenuList>
                 <NavigationMenuItem>
-                    <NavigationMenuTrigger className={`${scrolled || pathName != "/" ? "!text-black-3" : "!text-white-1"}`} >Admin</NavigationMenuTrigger>
+                    <NavigationMenuTrigger className={`${scrolled || pathName != "/" ? "!text-black-3" : "!text-white-1"} font-semibold`} >Admin</NavigationMenuTrigger>
                     <NavigationMenuContent>
-                        <ul className=" bg-cream text-card_clr_light">
+                        <ul className=" bg-cream text-card_clr_light font-semibold">
                             <Link href="/register" legacyBehavior passHref>
                                 <NavigationMenuLink className={navigationMenuTriggerStyle()}>
                                     Registration

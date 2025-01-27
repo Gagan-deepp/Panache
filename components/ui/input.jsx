@@ -50,7 +50,7 @@ const Input = React.forwardRef(({ className, type, label, ...props }, ref) => {
 
   return (
     <div
-      className="relative"
+      className="relative w-full"
       ref={containerRef}
       onMouseEnter={() => handleHover(true)}
       onMouseLeave={() => handleHover(false)}
@@ -82,12 +82,12 @@ const Input = React.forwardRef(({ className, type, label, ...props }, ref) => {
         <label
           htmlFor={id}
           className={cn(
-            "absolute left-3 top-1/2 -translate-y-1/2 startup-form_label transition-all duration-200 cursor-text flex items-center gap-1 origin-left ",
+            "absolute textColor left-3 top-1/2 -translate-y-1/2 startup-form_label transition-all duration-200 cursor-text flex items-center gap-1 origin-left ",
             (isFocused || hasValue || isHovered) && "top-2 -translate-y-full text-xs scale-[0.85] text-primary",
           )}
           onClick={handleFocus}
         >
-          <Dot />
+          <Dot className="!text-bg_dot" />
           {label}
         </label>
       )}
