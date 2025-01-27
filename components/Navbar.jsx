@@ -59,7 +59,7 @@ const Navbar = ({ username }) => {
                             </form>
                         </>) : (
                         <>
-                            <Link href="/login" > Login </Link>
+                            <Link className={`${scrolled || pathName != "/" ? "text-black-3" : "text-white-1"}`} href="/login" > Login </Link>
                         </>
                     )}
                 </div>
