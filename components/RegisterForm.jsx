@@ -4,7 +4,7 @@ import { useToast } from '@/hooks/use-toast'
 import { registerStudent } from '@/lib/actions/register'
 import { eventPrices } from '@/lib/data'
 import { registerSchema } from '@/lib/validation'
-import { Loader, Send } from 'lucide-react'
+import { Loader, Send, Trash } from 'lucide-react'
 import { useActionState, useEffect, useState } from 'react'
 import { z } from 'zod'
 import SelectCategory from './SelectCategory'
@@ -160,8 +160,17 @@ const RegisterForm = () => {
 
             {events.map((event, i) => (
                 <div key={i} >
-                    <label htmlFor="category" className='startup-form_label' > Event Category - {i + 1} </label>
+                    <label htmlFor="category" className='startup-form_label w-full flex justify-between items-center ' > Event Category - {i + 1} { <Button
+                        type="button"
+                        onClick={() => {
+                            setEvents(events.filter((_, index) => index !== i));
+                        }}
+                        className="btn"
+                    >
+                        <Trash />
+                    </Button> }</label>
                     <SelectCategory id="category" name="category" value={event.category} events={events} setEvents={setEvents} i={i} />
+
                     {errors.category && <p className='startup-form_error'> {errors.category} </p>}
 
                     {event.category && (

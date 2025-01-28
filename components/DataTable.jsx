@@ -15,26 +15,9 @@ import { Popover, PopoverContent, PopoverTrigger } from './ui/popover';
 
 const columns = [
     {
-        id: "select",
-        header: ({ table }) => (
-            <Checkbox
-                checked={
-                    table.getIsAllPageRowsSelected() ||
-                    (table.getIsSomePageRowsSelected() && "indeterminate")
-                }
-                onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-                aria-label="Select all"
-            />
-        ),
-        cell: ({ row }) => (
-            <Checkbox
-                checked={row.getIsSelected()}
-                onCheckedChange={(value) => row.toggleSelected(!!value)}
-                aria-label="Select row"
-            />
-        ),
-        enableSorting: false,
-        enableHiding: false,
+        accessorKey: "serialNumber",
+        header: "S.No",
+        cell: ({ row }) => <div>{row.index + 1}</div>,
     },
     {
         accessorKey: "rollno",
@@ -149,7 +132,8 @@ export const DataTable = ({ data, category }) => {
     })
 
     const exportToExcel = () => {
-        const exportData = filteredData.map((item) => ({
+        const exportData = filteredData.map((item, i) => ({
+            "S.No": i + 1,
             "Roll No": item.rollno,
             Name: item.name,
             Email: item.email,
@@ -227,7 +211,7 @@ export const DataTable = ({ data, category }) => {
             <h3 className="small-heading" > {category} Details - {selectedDate && selectedDate.toISOString().split("T")[0]}  </h3>
 
             <div className="flex items-center justify-between py-4 flex-wrap gap-5">
-                
+
                 <div className='flex gap-5 flex-wrap' >
                     <Button onClick={exportToExcel} >
                         <Download className="mr-2 h-4 w-4" />

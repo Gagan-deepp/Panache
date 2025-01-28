@@ -3,7 +3,7 @@ import { z } from 'zod'
 import { useToast } from '@/hooks/use-toast'
 import { findStudent, updateStudent } from '@/lib/actions/register'
 import { eventPrices } from '@/lib/data'
-import { Loader, Send } from 'lucide-react'
+import { Loader, Send, Trash } from 'lucide-react'
 import { useRouter } from "next/navigation"
 import { useActionState, useEffect, useState } from 'react'
 import SelectCategory from './SelectCategory'
@@ -20,7 +20,7 @@ const UpdateForm = () => {
   const [events, setEvents] = useState([]);
   const router = useRouter()
 
-
+// Search Student Function
   const handleFormFind = async (prevState, formData) => {
     try {
 
@@ -35,7 +35,7 @@ const UpdateForm = () => {
         setEvents(res.user.events.map(event => ({
           category: event.category,
           eventName: event.eventName,
-          ...(event.game && { game: event.game }),
+          ...(event.eventGame && { eventGame: event.eventGame }),
         })));
       }
     } catch (error) {
@@ -65,6 +65,7 @@ const UpdateForm = () => {
     }
   }
 
+  //Update Student Deatils Function
   const handleFormSubmit = async (prevState, formData) => {
     try {
       const formValues = {
@@ -81,6 +82,7 @@ const UpdateForm = () => {
       formData.append('token', student.token);
 
       await registerSchema.parseAsync(formValues);
+
       const res = await updateStudent({ formData })
 
       if (res.status === 'SUCCESS') {
@@ -155,6 +157,8 @@ const UpdateForm = () => {
   useEffect(() => {
     setTotalAmount(calculateTotalAmount(events));
   }, [events]);
+
+  
   // Find Action
   const [findState, formAction, isPending] = useActionState(handleFormFind, { error: "", status: "INITIAL" });
 
@@ -164,10 +168,9 @@ const UpdateForm = () => {
     <div>
       {!student && <form action={formAction} className='startup-form'  >
         <div>
-          <label htmlFor="user_token" className='startup-form_label' > Enter Token ID </label>
-          <Input id="user_token" name="user_token" required className='startup-form_input' placeholder="Enter Token ID" />
+          <Input id="user_token" name="user_token" required className='startup-form_input' label="Enter Token ID" placeholder="Enter Token ID" />
 
-          <Button type="submit" className="startup-form_btn text-bg-white mt-4" disabled={isPending} >
+          <Button type="submit" className="btn px-4 py-6 text-[16px] text-black-2 font-semibold mt-8" disabled={isPending} >
             {isPending ? 'Search...' : 'Search Student'}
             {isPending ? <Loader className='animate-spin size-6 ml-2' /> : <Send className='size-6 ml-2' />}
           </Button>
@@ -215,7 +218,15 @@ const UpdateForm = () => {
 
           {events?.map((event, i) => (
             <div key={i} >
-              <label htmlFor="category" className='startup-form_label' > Event Category - {i + 1} </label>
+              <label htmlFor="category" className='startup-form_label w-full flex justify-between items-center' > Event Category - {i + 1} {<Button
+                type="button"
+                onClick={() => {
+                  setEvents(events.filter((_, index) => index !== i));
+                }}
+                className="btn"
+              >
+                <Trash />
+              </Button>} </label>
               <SelectCategory id="category" name="category" value={event?.category} events={events} setEvents={setEvents} i={i} />
               {errors.category && <p className='startup-form_error'> {errors.category} </p>}
 
@@ -230,7 +241,7 @@ const UpdateForm = () => {
                   {event.category && event.eventName === "Online Gaming" && (
                     <div className='mt-4' >
                       <label htmlFor="onlineGame" className='startup-form_label' > Select Online Game </label>
-                      <SelectEvent id={`onlineGame`} name="game" category={event.category} value={event?.game} events={events} setEvents={setEvents} game={true} i={i} />
+                      <SelectEvent id={`onlineGame`} name="game" category={event.category} value={event?.eventGame} events={events} setEvents={setEvents} game={true} i={i} />
                       {errors.eventName && <p className='startup-form_error'> {errors.eventName} </p>}
                     </div>
                   )}
@@ -256,7 +267,7 @@ const UpdateForm = () => {
             <h3 className="font-semibold text-lg">Total Amount: ₹{totalAmount}</h3>
           </div>
 
-          <Button type="submit" className="startup-form_btn text-bg-white" disabled={updatePending} >
+          <Button type="submit" className="btn px-4 py-6 text-[16px] text-black-2 font-semibold" disabled={updatePending} >
             {updatePending ? 'Updating...' : 'Update'}
             {updatePending ? <Loader className='animate-spin size-6 ml-2' /> : <Send className='size-6 ml-2' />}
           </Button>
