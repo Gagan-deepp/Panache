@@ -40,7 +40,7 @@ function Calendar({
         ),
         day_range_end: "day-range-end",
         day_selected:
-          "bg-cream text-black-3 hover:bg-cream hover:text-black-3 focus:bg-cream focus:text-black-3",
+          "bg-black-2 text-white hover:bg-black-2 hover:text-white focus:bg-black-2 focus:text-white",
         day_today: "bg-card_clr_brown text-accent-foreground",
         day_outside:
           "day-outside text-black/30 aria-selected:bg-accent/50 aria-selected:text-muted-foreground",

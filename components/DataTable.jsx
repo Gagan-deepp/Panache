@@ -113,14 +113,10 @@ export const DataTable = ({ data, category }) => {
     const filteredData = useMemo(() => {
         let filtered = data
         if (selectedEvent !== "all") {
-            filtered = filtered.filter((item) => item.events.some((event) => event.eventName === selectedEvent))
+            filtered = data.filter(item => item.event.includes(selectedEvent));
         }
         if (selectedDate) {
-
-            console.log("SELECTED DATE : ", selectedDate.toISOString().split("T")[0])
             filtered = filtered.filter((item) => {
-                // console.log("ITEMMMM : ", item.createdAt.split("T")[0])
-                // console.log("SELECTED DATE : ", selectedDate.toISOString().split("T")[0])
                 return item.createdAt.split("T")[0] === selectedDate.toISOString().split("T")[0]
             })
         }
@@ -132,7 +128,7 @@ export const DataTable = ({ data, category }) => {
             )
         }
         return filtered
-    }, [selectedEvent, selectedDate, searchTerm])
+    }, [selectedEvent, selectedDate, searchTerm, data])
 
     const table = useReactTable({
         data: filteredData,
@@ -168,7 +164,7 @@ export const DataTable = ({ data, category }) => {
         const ws = XLSX.utils.json_to_sheet([]);
 
         // Add category heading at the top
-        const heading = `Category: ${category} - Date: ${new Date().toLocaleDateString()}`;
+        const heading = `Category: ${category} - Date: ${selectedDate ? selectedDate.toISOString().split("T")[0] : new Date().toISOString().split("T")[0]}`;
         XLSX.utils.sheet_add_aoa(ws, [[heading]], { origin: "A1" });
 
         // Merge heading cells across all columns
@@ -215,28 +211,18 @@ export const DataTable = ({ data, category }) => {
         const url = URL.createObjectURL(blob);
         const a = document.createElement("a");
         a.href = url;
-        a.download = `students_data_${category}_${selectedEvent}.xlsx`;
+        a.download = `students_data_${category}_${selectedEvent}_${selectedDate ? selectedDate.toISOString().split("T")[0] : ""}.xlsx`;
         a.click();
         URL.revokeObjectURL(url);
     };
 
-    // const exportToExcel = () => {
-    //     const exportData = filteredData.map(item => ({
-    //         "Roll No": item.rollno,
-    //         "Name": item.name,
-    //         "Email": item.email,
-    //         "Events": item.event.join(", "),
-    //         "Token": item.token
-    //     }));
-
-    //     const ws = XLSX.utils.json_to_sheet(exportData);
-    //     const wb = XLSX.utils.book_new();
-    //     XLSX.utils.book_append_sheet(wb, ws, "Students");
-    //     XLSX.writeFile(wb, `students_data_${category}_${selectedEvent}.xlsx`);
-    // };
     useEffect(() => {
         table.setPageIndex(0);
     }, [selectedEvent]);
+
+    useEffect(() => {
+        setSelectedDate(null)
+    }, [data])
 
     return (
         <div className="w-full">
@@ -251,7 +237,7 @@ export const DataTable = ({ data, category }) => {
                     onChange={(event) =>
                         table.getColumn("name")?.setFilterValue(event.target.value)
                     }
-                    className="max-w-sm"
+                    className="max-w-sm !w-fit "
                 />
                 <div className='flex gap-5 flex-wrap' >
                     <Button onClick={exportToExcel} >
