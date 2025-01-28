@@ -19,6 +19,8 @@ const UpdateForm = () => {
   const [totalAmount, setTotalAmount] = useState(0);
   const [events, setEvents] = useState([]);
   const router = useRouter()
+
+
   const handleFormFind = async (prevState, formData) => {
     try {
 
@@ -35,7 +37,6 @@ const UpdateForm = () => {
           eventName: event.eventName,
           ...(event.game && { game: event.game }),
         })));
-        console.log("Student : ", student)
       }
     } catch (error) {
 
@@ -66,7 +67,6 @@ const UpdateForm = () => {
 
   const handleFormSubmit = async (prevState, formData) => {
     try {
-      console.log("Student data : ", student)
       const formValues = {
         name: formData.get("name"),
         rollno: formData.get("rollno"),
@@ -213,24 +213,33 @@ const UpdateForm = () => {
             {errors.phone && <p className='startup-form_error'> {errors.phone} </p>}
           </div>
 
-          {events.map((event, i) => (
+          {events?.map((event, i) => (
             <div key={i} >
               <label htmlFor="category" className='startup-form_label' > Event Category - {i + 1} </label>
-              <SelectCategory id="category" name="category" value={event.category} events={events} setEvents={setEvents} i={i} />
+              <SelectCategory id="category" name="category" value={event?.category} events={events} setEvents={setEvents} i={i} />
               {errors.category && <p className='startup-form_error'> {errors.category} </p>}
 
               {event.category && (
                 <>
                   <div className='mt-4' >
                     <label htmlFor="eventName" className='startup-form_label' > Event Name </label>
-                    <SelectEvent id={`eventName${i}`} name="category" value={event.eventName} category={event.category} events={events} setEvents={setEvents} i={i} />
+                    <SelectEvent id={`eventName${i}`} name="category" value={event.eventName?.startsWith("Arm Wrestling") ? "Arm Wrestling" : event?.eventName} category={event.category} events={events} setEvents={setEvents} i={i} />
                     {errors.eventName && <p className='startup-form_error'> {errors.eventName} </p>}
                   </div>
 
                   {event.category && event.eventName === "Online Gaming" && (
                     <div className='mt-4' >
                       <label htmlFor="onlineGame" className='startup-form_label' > Select Online Game </label>
-                      <SelectEvent id={`onlineGame`} name="game" category={event.category} value={event.game} events={events} setEvents={setEvents} game={true} i={i} />
+                      <SelectEvent id={`onlineGame`} name="game" category={event.category} value={event?.game} events={events} setEvents={setEvents} game={true} i={i} />
+                      {errors.eventName && <p className='startup-form_error'> {errors.eventName} </p>}
+                    </div>
+                  )}
+
+                  {event.category && event.eventName?.startsWith("Arm Wrestling") && (
+                    <div className='mt-4' >
+                      <label htmlFor="arm_wrestle" className='startup-form_label' > Select Weight Category </label>
+                      <SelectEvent id={`arm_wrestle`} name="arm_wrestle" value={event.eventName.split(' - ')[1]}
+                        category={event.category} events={events} setEvents={setEvents} arm={true} i={i} />
                       {errors.eventName && <p className='startup-form_error'> {errors.eventName} </p>}
                     </div>
                   )}

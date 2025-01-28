@@ -2,7 +2,6 @@
 
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { eventName, onlineGames } from "@/lib/data";
@@ -50,10 +49,8 @@ const columns = [
             return (
                 <Button
                     variant="ghost"
-                    onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
                 >
                     Name
-                    <ArrowUpDown className="ml-2 h-4 w-4" />
                 </Button>
             )
         },
@@ -230,15 +227,7 @@ export const DataTable = ({ data, category }) => {
             <h3 className="small-heading" > {category} Details - {selectedDate && selectedDate.toISOString().split("T")[0]}  </h3>
 
             <div className="flex items-center justify-between py-4 flex-wrap gap-5">
-                <Input
-                    label="Enter name"
-                    placeholder="Filter names..."
-                    value={(table.getColumn("name")?.getFilterValue() ?? "")}
-                    onChange={(event) =>
-                        table.getColumn("name")?.setFilterValue(event.target.value)
-                    }
-                    className="max-w-sm !w-fit "
-                />
+                
                 <div className='flex gap-5 flex-wrap' >
                     <Button onClick={exportToExcel} >
                         <Download className="mr-2 h-4 w-4" />
@@ -344,26 +333,7 @@ export const DataTable = ({ data, category }) => {
             </div>
             <div className="flex items-center justify-between space-x-2 py-4">
                 <div className="flex-1 text-sm text-muted-foreground">
-                    {table.getFilteredSelectedRowModel().rows.length} of{" "}
-                    {table.getFilteredRowModel().rows.length} row(s) selected.
-                </div>
-                <div className="space-x-2">
-                    <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => table.previousPage()}
-                        disabled={!table.getCanPreviousPage()}
-                    >
-                        Previous
-                    </Button>
-                    <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => table.nextPage()}
-                        disabled={!table.getCanNextPage()}
-                    >
-                        Next
-                    </Button>
+                    {table.getFilteredRowModel().rows.length} Total Entries.
                 </div>
             </div>
             <div className="flex justify-center mt-4">
