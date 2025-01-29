@@ -9,8 +9,12 @@ import { usePathname } from 'next/navigation'
 import NavAuth from './NavAuth'
 import { useEffect, useState } from 'react'
 
-const Navbar = ({ username }) => {
+const Navbar = () => {
     const [scrolled, setScrolled] = useState(false)
+
+    const username = async () => {
+        return (await auth());
+    }
     useEffect(() => {
         const handleScroll = () => {
             const scrollPosition = window.scrollY

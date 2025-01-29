@@ -43,6 +43,36 @@ const page = async ({ searchParams }) => {
                         <DataTable data={JSON.parse(eventData.users)} category={category} />
                     </div>)}
             </div>
+
+            {/* GROUP DATA */}
+            <div className="w-full">
+
+                <div className="flex items-center gap-5" >
+                    <h1 className="my-8 sub-heading"> Group Event Data </h1>
+                    <Link href={`/view`} className="flex items-center text-blue-800 underline" >
+                        ( <Eraser className="size-4" /> Clear )
+                    </Link>
+                </div>
+
+                <div className="tab rounded-xl" >
+                    {
+                        eventCategory.map((event, i) => {
+                            let isActive = event.name === category && group
+                            return (
+                                <Link key={i} href={`/view?category=${event.name}&group=true`} className={`startup-card_btn tab justify-center ${isActive && "!bg-[#0e0e12] !text-grey-2"} `} >
+                                    {event.name}
+                                </Link>
+                            )
+                        })
+                    }
+                </div>
+
+                {category && groupEventData.status === "SUCCESS" && (
+                    <div className="mt-8" >
+                        <h3 className="small-heading" > {category} Details  </h3>
+                        <GroupDataTable data={JSON.parse(groupEventData.groups)} category={category} />
+                    </div>)}
+            </div>
         </div>
     )
 }

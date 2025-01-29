@@ -12,6 +12,7 @@ import { useEffect, useMemo, useState } from 'react';
 import * as XLSX from 'xlsx';
 import { Calendar } from './ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from './ui/popover';
+import { Input } from "./ui/input";
 
 const columns = [
     {
@@ -40,9 +41,24 @@ const columns = [
         cell: ({ row }) => <div>{row.getValue("name")}</div>,
     },
     {
+        accessorKey: "course",
+        header: "Course",
+        cell: ({ row }) => <div className="lowercase">{row.getValue("course")}</div>,
+    },
+    {
+        accessorKey: "branch",
+        header: "Branch",
+        cell: ({ row }) => <div className="lowercase">{row.getValue("branch")}</div>,
+    },
+    {
         accessorKey: "email",
         header: "Email",
         cell: ({ row }) => <div className="lowercase">{row.getValue("email")}</div>,
+    },
+    {
+        accessorKey: "phone",
+        header: "Phone No",
+        cell: ({ row }) => <div className="lowercase">{row.getValue("phone")}</div>,
     },
     {
         accessorKey: "event",
@@ -73,7 +89,7 @@ export const DataTable = ({ data, category }) => {
     const [calendarOpen, setCalendarOpen] = useState(false)
     const [pagination, setPagination] = useState({
         pageIndex: 0,
-        pageSize: 20,
+        pageSize: 50,
     })
 
     const allEventNames = useMemo(() => {
@@ -93,7 +109,15 @@ export const DataTable = ({ data, category }) => {
     const filteredData = useMemo(() => {
         let filtered = data
         if (selectedEvent !== "all") {
-            filtered = data.filter(item => item.event.includes(selectedEvent));
+            filtered = data.filter(
+                (item) =>
+                    Array.isArray(item.event) &&
+                    item.event.some(
+                        (event) =>
+                            event &&
+                            (event.includes(selectedEvent) || (selectedEvent === "Arm Wrestling" && event.startsWith("Arm Wrestling"))),
+                    ),
+            )
         }
         if (selectedDate) {
             filtered = filtered.filter((item) => {
@@ -136,6 +160,9 @@ export const DataTable = ({ data, category }) => {
             "S.No": i + 1,
             "Roll No": item.rollno,
             Name: item.name,
+            Course: item.course,
+            Branch: item.branch,
+            Phone: item.phone,
             Email: item.email,
             Events: item.event.join(", "),
             Token: item.token,
@@ -213,6 +240,17 @@ export const DataTable = ({ data, category }) => {
             <div className="flex items-center justify-between py-4 flex-wrap gap-5">
 
                 <div className='flex gap-5 flex-wrap' >
+
+                    <Input
+                        label="Enter name"
+                        placeholder="Filter names..."
+                        value={(table.getColumn("name")?.getFilterValue() ?? "")}
+                        onChange={(event) =>
+                            table.getColumn("name")?.setFilterValue(event.target.value)
+                        }
+                        className="w-fit"
+                    />
+
                     <Button onClick={exportToExcel} >
                         <Download className="mr-2 h-4 w-4" />
                         Export to Excel
