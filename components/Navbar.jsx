@@ -1,27 +1,34 @@
 "use client"
-import { logout } from '@/lib/actions/auth'
+import { auth, logout } from '@/lib/actions/auth'
 import { motion } from "framer-motion"
 import { navData } from '@/lib/data'
 import Image from 'next/image'
 import Link from 'next/link'
 import MobileNavigation from './MobileNav'
-import { usePathname } from 'next/navigation'
+import { usePathname, useRouter } from 'next/navigation'
 import NavAuth from './NavAuth'
 import { useEffect, useState } from 'react'
+import useAuthStore from '@/lib/store/auth_store'
 
 const Navbar = () => {
     const [scrolled, setScrolled] = useState(false)
+    const { username, setUsername } = useAuthStore()
+    const router = useRouter()
 
-    const username = async () => {
-        return (await auth());
+    const handleLogOut = async () => {
+        const done = await logout();
+        if (done) {
+            setUsername(null)
+            router.push("/")
+        }
     }
+
     useEffect(() => {
         const handleScroll = () => {
             const scrollPosition = window.scrollY
             const windowHeight = window.innerHeight
             setScrolled(scrollPosition > windowHeight * 0.9)
         }
-
         window.addEventListener("scroll", handleScroll)
         return () => window.removeEventListener("scroll", handleScroll)
     }, [])
@@ -56,11 +63,9 @@ const Navbar = () => {
                         <>
                             <NavAuth pathName={pathName} scrolled={scrolled} />
 
-                            <form action={logout}>
-                                <button className={`${scrolled || pathName != "/" ? "text-black-3" : "text-white-1"} group relative hover:scale-[0.8] transition-all duration-500 ease-[0.65, 0, 0.35, 1]  font-semibold`} >
-                                    Logout
-                                </button>
-                            </form>
+                            <button onClick={handleLogOut} className={`${scrolled || pathName != "/" ? "text-black-3" : "text-white-1"} group relative hover:scale-[0.8] transition-all duration-500 ease-[0.65, 0, 0.35, 1]  font-semibold`} >
+                                Logout
+                            </button>
                         </>) : (
                         <>
                             <Link className={`${scrolled || pathName != "/" ? "text-black-3" : "text-white-1"} font-semibold`} href="/login" > Login </Link>

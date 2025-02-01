@@ -9,11 +9,13 @@ import { useActionState, useState } from 'react'
 import { z } from 'zod'
 import { Button } from './ui/button'
 import { Input } from './ui/input'
+import useAuthStore from '@/lib/store/auth_store'
 
 const LoginForm = () => {
     const [errors, setErrors] = useState({})
     const { toast } = useToast();
     const router = useRouter();
+    const setUsername = useAuthStore((state) => state.setUsername)
 
     const handleFormSubmit = async (prevState, formData) => {
         try {
@@ -25,6 +27,7 @@ const LoginForm = () => {
             const res = await logInUser(formData)
 
             if (res.status === 'SUCCESS') {
+                setUsername(formValues.username)
                 toast({
                     title: 'Success',
                     description: 'User Logged In Successfully'
