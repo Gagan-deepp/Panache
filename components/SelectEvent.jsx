@@ -10,17 +10,21 @@ const SelectEvent = ({ events, category, i = 0, setEvents, game = false, value, 
     // Determine the event list based on category
     let filteredEventNames = [];
 
-    if (category === "General") {
+    if (arm) {
+        // Ensure armCategory exists and filter weight categories properly
+        filteredEventNames = armCategory?.filter(
+            (category) => !selectedEvents.includes(`Arm Wrestling - ${category}`)
+        ) || [];
+    } else if (category === "General") {
         filteredEventNames = eventName["General"] || []; // Show all general events
-    } else if (arm) {
-        filteredEventNames = armCategory.filter((category) => !selectedEvents.includes(`Arm Wrestling - ${category}`)); // Exclude selected weight categories
     } else if (game) {
-        filteredEventNames = onlineGames?.filter((event) => !selectedEvents.includes(event));
+        filteredEventNames = onlineGames?.filter((event) => !selectedEvents.includes(event)) || [];
     } else if (category === "Cyber" && selectedEvents.includes("Online Gaming")) {
-        filteredEventNames = eventName[category];
+        filteredEventNames = eventName[category] || [];
     } else {
         filteredEventNames = eventName[category]?.filter((event) => !selectedEvents.includes(event)) || [];
     }
+
 
     return (
         <Select
@@ -43,8 +47,8 @@ const SelectEvent = ({ events, category, i = 0, setEvents, game = false, value, 
                         arm
                             ? "Select Weight Category"
                             : game
-                            ? "Select Online Game"
-                            : "Select Event Name"
+                                ? "Select Online Game"
+                                : "Select Event Name"
                     }
                 />
             </SelectTrigger>

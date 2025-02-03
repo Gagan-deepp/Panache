@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/button";
+import Bento from "@/components/web_comp/Bento";
 import Events from "@/components/web_comp/Events";
 import Hero from "@/components/web_comp/Hero";
 import Second from "@/components/web_comp/Second";
@@ -8,16 +9,13 @@ import Link from "next/link";
 export default function Home() {
   return (
     <div className=" min-h-dvh" >
-      {/* <section className="grey_container rounded-3xl relative mt-12" >
-        <Image src="/1.png" alt="background" fill={true} className=" !z-[-1] rounded-3xl opacity-[0.6] object-cover" quality={100} />
-        <h1 className="heading"> Panache <br /> 2025 </h1>
-      </section> */}
       <Hero />
       <div className="section_container" >
         <Second />
+        <Bento />
         <Events />
       </div>
-      <section className="grey_container !min-h-[300px] rounded-3xl relative mt-12" >
+      <section className="grey_container !min-h-[300px] rounded-3xl relative my-12" >
         <Image src="/timeline.jpeg" alt="background" fill={true} className=" !z-[-1] rounded-3xl opacity-[0.6] object-cover" quality={100} />
         <h1 className="heading"> Explore the Timeline </h1>
         <p className="tag" > Your Hour-by-Hour Guide to the Festivities – Stay Tuned, Stay Inspired, and Make Every Moment </p>

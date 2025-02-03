@@ -7,7 +7,7 @@ import EventContent from "../EventContent"
 
 const Events = () => {
   return (
-    <section className="section" >
+    <section className="section py-[8rem]" >
       <div className="flex flex-col gap-10 w-full" >
         <div className="flex flex-col gap-4" >
           <div className="flex gap-2 items-center flex-row-reverse sm:flex-row" >
