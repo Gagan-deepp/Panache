@@ -1,25 +1,28 @@
 "use client"
 
-import { useToast } from '@/hooks/use-toast'
 import { registerStudent } from '@/lib/actions/register'
 import { eventPrices } from '@/lib/data'
 import { registerSchema } from '@/lib/validation'
 import { Loader, Send, Trash } from 'lucide-react'
 import { useActionState, useEffect, useState } from 'react'
+import { toast } from 'sonner'
 import { z } from 'zod'
 import SelectCategory from './SelectCategory'
 import SelectEvent from './SelectEvent'
 import { Button } from './ui/button'
 import { Input } from './ui/input'
+import { SelectCourse } from './SelectCourse'
+import { SelectBranch } from './SelectBranch'
 
 const RegisterForm = () => {
 
-    const { toast } = useToast();
     const [errors, setErrors] = useState({})
     const [totalAmount, setTotalAmount] = useState(0);
     const [events, setEvents] = useState([
         { category: '', eventName: '' },
     ]);
+    const [course, setCourse] = useState("");
+    const [branch, setBranch] = useState("");
     const eventsInitial = [
         { category: '', eventName: '' },
     ];
@@ -29,52 +32,38 @@ const RegisterForm = () => {
             const formValues = {
                 name: formData.get("name"),
                 rollno: formData.get("rollno"),
-                course: formData.get("course"),
-                branch: formData.get("branch"),
+                course,
+                branch,
                 email: formData.get("email"),
                 phone: formData.get("phone"),
                 events: events,
             }
             formData.append('events', JSON.stringify(events));
             formData.append('amount', totalAmount);
-
+            formData.append('course', course);
+            formData.append('branch', branch);
             await registerSchema.parseAsync(formValues);
             const res = await registerStudent({ formData })
 
             if (res.status === 'SUCCESS') {
-                toast({
-                    variant: "success",
-                    title: 'Success',
-                    description: res.message
-                })
+                toast.success(res.message);
                 setEvents(eventsInitial);
+                setCourse("");
+                setBranch("")
                 setErrors({});
             } else {
-                toast({
-                    variant: "destructive",
-                    title: 'Fail',
-                    description: res.message
-                })
+                toast.error(res.message)
             }
         } catch (error) {
 
             if (error instanceof z.ZodError) {
                 const fieldErrors = error.flatten().fieldErrors;
                 setErrors(fieldErrors);
-
-                toast({
-                    title: 'Error',
-                    description: 'Please check your input and try again..'
-                })
+                toast.error('Please check your input and try again')
 
                 return { ...prevState, error: "Validation Failed", status: "Error" }
             }
-
-            toast({
-                variant: "destructive",
-                title: 'Error',
-                description: "Unsuccessful Registration",
-            })
+            toast.error('Unsuccessful Registration')
             return {
                 ...prevState,
                 error: "An unexpected Error Occured",
@@ -123,7 +112,6 @@ const RegisterForm = () => {
 
     const [state, formAction, isPending] = useActionState(handleFormSubmit, { error: "", status: "INITIAL" });
     useEffect(() => {
-        console.log("EVENTSS : ", events)
         setTotalAmount(calculateTotalAmount(events));
     }, [events]);
     return (
@@ -140,11 +128,11 @@ const RegisterForm = () => {
 
             <div className='flex justify-between items-center flex-wrap gap-4' >
                 <div>
-                    <Input id="course" name="course" required label="Student Course" className='startup-form_input' placeholder="Btech" />
+                    <SelectCourse value={course} setCourse={setCourse} />
                     {errors.course && <p className='startup-form_error'> {errors.course} </p>}
                 </div>
                 <div>
-                    <Input id="branch" name="branch" required label="Student Branch" className='startup-form_input' placeholder="CSE - AI/ML" />
+                    <SelectBranch value={branch} selectedCourse={course} setBranch={setBranch} />
                     {errors.branch && <p className='startup-form_error'> {errors.branch} </p>}
                 </div>
             </div>
@@ -160,7 +148,7 @@ const RegisterForm = () => {
 
             {events.map((event, i) => (
                 <div key={i} >
-                    <label htmlFor="category" className='startup-form_label w-full flex justify-between items-center ' > Event Category - {i + 1} { <Button
+                    <label htmlFor="category" className='startup-form_label w-full flex justify-between items-center ' > Event Category - {i + 1} {<Button
                         type="button"
                         onClick={() => {
                             setEvents(events.filter((_, index) => index !== i));
@@ -168,7 +156,7 @@ const RegisterForm = () => {
                         className="btn"
                     >
                         <Trash />
-                    </Button> }</label>
+                    </Button>}</label>
                     <SelectCategory id="category" name="category" value={event.category} events={events} setEvents={setEvents} i={i} />
 
                     {errors.category && <p className='startup-form_error'> {errors.category} </p>}

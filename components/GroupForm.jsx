@@ -1,6 +1,5 @@
 "use client"
 
-import { useToast } from '@/hooks/use-toast'
 import { registerGroup } from '@/lib/actions/register'
 import { GroupeventPrices } from '@/lib/data'
 import { groupRegisterSchema } from '@/lib/validation'
@@ -11,10 +10,10 @@ import SelectCategory from './SelectCategory'
 import SelectEvent from './SelectEvent'
 import { Button } from './ui/button'
 import { Input } from './ui/input'
+import { toast } from 'sonner'
 
 const GroupForm = () => {
 
-    const { toast } = useToast();
     const [errors, setErrors] = useState({})
     const [totalAmount, setTotalAmount] = useState(0);
     const [event, setEvent] = useState([
@@ -50,11 +49,7 @@ const GroupForm = () => {
             const res = await registerGroup({ formData })
 
             if (res.status === 'SUCCESS') {
-                toast({
-                    variant: "success",
-                    title: 'Success',
-                    description: res.message
-                })
+                toast.success(res.message);
                 setEvent([
                     { category: '', eventName: '' },
                 ]);
@@ -63,11 +58,7 @@ const GroupForm = () => {
                 ])
                 setErrors({});
             } else {
-                toast({
-                    variant: "destructive",
-                    title: 'Fail',
-                    description: res.message
-                })
+                toast.error(res.message)
             }
         } catch (error) {
 
@@ -75,18 +66,11 @@ const GroupForm = () => {
                 const fieldErrors = error.flatten().fieldErrors;
                 setErrors(fieldErrors);
 
-                toast({
-                    title: 'Error',
-                    description: 'Please check your input and try again..'
-                })
+                toast.error("Please Check your input")
 
                 return { ...prevState, error: "Validation Failed", status: "Error" }
             }
-
-            toast({
-                title: 'Error',
-                description: error.message
-            })
+            toast.error(error.message)
             return {
                 ...prevState,
                 error: "An unexpected Error Occured",

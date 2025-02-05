@@ -1,9 +1,9 @@
-import { Toaster } from "@/components/ui/toaster";
-import { Source_Sans_3 } from "next/font/google";
-import { SpeedInsights } from '@vercel/speed-insights/next';
-import "./globals.css";
-import { auth } from "@/lib/actions/auth";
 import AuthHydration from "@/components/AuthHydration";
+import { auth } from "@/lib/actions/auth";
+import { SpeedInsights } from '@vercel/speed-insights/next';
+import { Source_Sans_3 } from "next/font/google";
+import "./globals.css";
+import { Toaster } from "@/components/ui/sonner";
 
 const Source_Sans = Source_Sans_3({
   variable: "--font-source_sans",
@@ -29,7 +29,7 @@ export default async function RootLayout({ children }) {
         <AuthHydration initialUsername={initialUsername} />
         {children}
         <SpeedInsights />
-        <Toaster />
+        <Toaster position="top-center" richColors closeButton />
       </body>
     </html>
   );

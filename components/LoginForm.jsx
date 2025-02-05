@@ -1,19 +1,18 @@
 "use client"
 
-import { useToast } from '@/hooks/use-toast'
 import { logInUser } from '@/lib/actions/auth'
+import useAuthStore from '@/lib/store/auth_store'
 import { loginSchema } from '@/lib/validation'
 import { Send } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { useActionState, useState } from 'react'
+import { toast } from 'sonner'
 import { z } from 'zod'
 import { Button } from './ui/button'
 import { Input } from './ui/input'
-import useAuthStore from '@/lib/store/auth_store'
 
 const LoginForm = () => {
     const [errors, setErrors] = useState({})
-    const { toast } = useToast();
     const router = useRouter();
     const setUsername = useAuthStore((state) => state.setUsername)
 
@@ -28,10 +27,7 @@ const LoginForm = () => {
 
             if (res.status === 'SUCCESS') {
                 setUsername(formValues.username)
-                toast({
-                    title: 'Success',
-                    description: 'User Logged In Successfully'
-                })
+                toast.success('User Logged In Successfully');
 
                 router.push(`/`)
             }
@@ -40,19 +36,11 @@ const LoginForm = () => {
             if (error instanceof z.ZodError) {
                 const fieldErrors = error.flatten().fieldErrors;
                 setErrors(fieldErrors);
-
-                toast({
-                    title: 'Error',
-                    password: 'Please check your input and try again..'
-                })
-
+                toast.error("Please Check your input")
                 return { ...prevState, error: "Validation Failed", status: "Error" }
             }
+            toast.error(error.message)
 
-            toast({
-                title: 'Error',
-                password: 'An unexpected Error Occured'
-            })
             return {
                 ...prevState,
                 error: "An unexpected Error Occured",

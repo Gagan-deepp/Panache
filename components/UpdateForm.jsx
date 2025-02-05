@@ -11,27 +11,30 @@ import SelectEvent from './SelectEvent'
 import { Button } from './ui/button'
 import { Input } from './ui/input'
 import { registerSchema } from '@/lib/validation'
+import { toast } from 'sonner'
+import { SelectCourse } from './SelectCourse'
+import { SelectBranch } from './SelectBranch'
 
 const UpdateForm = () => {
-  const { toast } = useToast();
   const [errors, setErrors] = useState({})
   const [student, setStudent] = useState(null)
   const [totalAmount, setTotalAmount] = useState(0);
   const [events, setEvents] = useState([]);
   const router = useRouter()
+  const [course, setCourse] = useState("");
+  const [branch, setBranch] = useState("");
 
-// Search Student Function
+  // Search Student Function
   const handleFormFind = async (prevState, formData) => {
     try {
 
       const res = await findStudent({ formData })
 
       if (res.status === 'SUCCESS') {
-        toast({
-          title: 'Success',
-          description: "Student Data Found"
-        })
+        toast.success('Student Data Found')
         setStudent(res.user);
+        setCourse(res.user.course)
+        setBranch(res.user.branch)
         setEvents(res.user.events.map(event => ({
           category: event.category,
           eventName: event.eventName,
@@ -43,20 +46,11 @@ const UpdateForm = () => {
       if (error instanceof z.ZodError) {
         const fieldErrors = error.flatten().fieldErrors;
         setErrors(fieldErrors);
-
-        toast({
-          title: 'Error',
-          description: 'Please check your input and try again..'
-        })
+        toast.error('Please check your input and try again..')
 
         return { ...prevState, error: "Validation Failed", status: "Error" }
       }
-
-      toast({
-        variant: "destructive",
-        title: 'Error',
-        description: "Cannot find user",
-      })
+      toast.error('Cannot find user..')
       return {
         ...prevState,
         error: "An unexpected Error Occured",
@@ -71,8 +65,8 @@ const UpdateForm = () => {
       const formValues = {
         name: formData.get("name"),
         rollno: formData.get("rollno"),
-        course: formData.get("course"),
-        branch: formData.get("branch"),
+        course,
+        branch,
         email: formData.get("email"),
         phone: formData.get("phone"),
         events: events,
@@ -80,44 +74,30 @@ const UpdateForm = () => {
       formData.append('events', JSON.stringify(events));
       formData.append('amount', totalAmount);
       formData.append('token', student.token);
+      formData.append('course', course);
+      formData.append('branch', branch);
 
       await registerSchema.parseAsync(formValues);
 
       const res = await updateStudent({ formData })
 
       if (res.status === 'SUCCESS') {
-        toast({
-          variant: "success",
-          title: 'Success',
-          description: res.message
-        })
+        toast.success(res.message);
         setStudent(null)
       } else {
-        toast({
-          variant: "destructive",
-          title: 'Fail',
-          description: res.message
-        })
+        toast.error(res.message)
       }
     } catch (error) {
 
       if (error instanceof z.ZodError) {
         const fieldErrors = error.flatten().fieldErrors;
         setErrors(fieldErrors);
-
-        toast({
-          title: 'Error',
-          description: 'Please check your input and try again..'
-        })
+        toast.error('Please check your input and try again..')
 
         return { ...prevState, error: "Validation Failed", status: "Error" }
       }
       console.log("Error updating : ", error)
-      toast({
-        variant: "destructive",
-        title: 'Error',
-        description: "Unsuccessful Registration",
-      })
+      toast.error('Unsuccessful Registration')
       return {
         ...prevState,
         error: "An unexpected Error Occured",
@@ -158,7 +138,7 @@ const UpdateForm = () => {
     setTotalAmount(calculateTotalAmount(events));
   }, [events]);
 
-  
+
   // Find Action
   const [findState, formAction, isPending] = useActionState(handleFormFind, { error: "", status: "INITIAL" });
 
@@ -194,13 +174,11 @@ const UpdateForm = () => {
 
           <div className='flex justify-between items-center flex-wrap gap-4' >
             <div>
-              <label htmlFor="Course" className='startup-form_label' > Student Course </label>
-              <Input id="course" defaultValue={student?.course} name="course" required className='startup-form_input' placeholder="Enter course" />
+              <SelectCourse value={course} setCourse={setCourse} />
               {errors.course && <p className='startup-form_error'> {errors.course} </p>}
             </div>
             <div>
-              <label htmlFor="branch" className='startup-form_label' > Branch </label>
-              <Input id="branch" defaultValue={student?.branch} name="branch" required className='startup-form_input' placeholder="Enter branch" />
+              <SelectBranch value={branch} selectedCourse={course} setBranch={setBranch} />
               {errors.branch && <p className='startup-form_error'> {errors.branch} </p>}
             </div>
           </div>
