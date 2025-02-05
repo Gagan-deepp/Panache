@@ -1,6 +1,8 @@
 'use client'
+import { Button } from "@/components/ui/button";
 import { updateExistingData } from "@/lib/actions/register";
 import { useState } from "react";
+import { toast } from "sonner";
 
 const page = () => {
   const [driveLink, setDriveLink] = useState("");
@@ -43,6 +45,17 @@ const page = () => {
       alert("No File ID to copy");
     }
   };
+
+  const handleDataBase = async () => {
+    try {
+      const res = await updateExistingData();
+      if(res.status === "SUCCESS"){
+        toast.success(res.message)
+      }
+    } catch (error) {
+
+    }
+  }
   return (
     <div className="container">
       <h1 className="text-2xl mb-4">Google Drive Link to File ID</h1>
@@ -85,6 +98,11 @@ const page = () => {
           </button>
         </div>
       )}
+
+
+      <Button onClick={() => { handleDataBase() }} >
+        Update Student
+      </Button>
     </div>
   )
 }
