@@ -112,10 +112,19 @@ const UpdateForm = () => {
 
       // Find the event price by searching through categories
       for (const category in eventPrices) {
-        const foundEvent = eventPrices[category].find(e => e.name === event.eventName);
+        const foundEvent = eventPrices[category].find((e) => e.name === event.eventName);
         if (foundEvent) {
           eventTotal = foundEvent.price;
           break;
+        }
+
+        // Handle arm wrestling dynamic naming
+        if (event.eventName.startsWith("Arm Wrestling - ")) {
+          const foundArmEvent = eventPrices[category].find((e) => e.name === "Arm Wrestling");
+          if (foundArmEvent) {
+            eventTotal = foundArmEvent.price;
+            break;
+          }
         }
       }
 
