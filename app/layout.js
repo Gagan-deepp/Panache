@@ -3,6 +3,7 @@ import { auth } from "@/lib/actions/auth";
 import { SpeedInsights } from '@vercel/speed-insights/next';
 import { Source_Sans_3 } from "next/font/google";
 import "./globals.css";
+import { Analytics } from '@vercel/analytics/next';
 import { Toaster } from "@/components/ui/sonner";
 
 const Source_Sans = Source_Sans_3({
@@ -29,6 +30,7 @@ export default async function RootLayout({ children }) {
         <AuthHydration initialUsername={initialUsername} />
         {children}
         <SpeedInsights />
+        <Analytics />
         <Toaster position="top-center" richColors closeButton />
       </body>
     </html>
