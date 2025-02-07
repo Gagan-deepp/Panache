@@ -40,7 +40,7 @@ const page = async ({ searchParams }) => {
 
                 {category && eventData.status === "SUCCESS" && (
                     <div className="mt-8" >
-                        <DataTable data={JSON.parse(eventData.users)} category={category} />
+                        <DataTable totalCountEvent={eventData.totalCount} eventData={JSON.parse(eventData.users)} category={category} />
                     </div>)}
             </div>
 

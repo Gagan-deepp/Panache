@@ -8,11 +8,16 @@ import { eventName, onlineGames } from "@/lib/data";
 import { cn, formatDate } from '@/lib/utils';
 import { flexRender, getCoreRowModel, getFilteredRowModel, getPaginationRowModel, getSortedRowModel, useReactTable } from "@tanstack/react-table";
 import { ArrowUpDown, CalendarIcon, Download } from 'lucide-react';
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import * as XLSX from 'xlsx';
 import { Calendar } from './ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from './ui/popover';
 import { Input } from "./ui/input";
+import { fetchEventData } from "@/lib/actions/Events";
+import { SelectCourse } from "./SelectCourse";
+import { SelectBranch } from "./SelectBranch";
+import { toast } from "sonner";
+import Link from "next/link";
 
 const columns = [
     {
@@ -78,15 +83,21 @@ const columns = [
     },
 ]
 
-export const DataTable = ({ data, category }) => {
-    const [sorting, setSorting] = useState([])
+export const DataTable = ({ eventData, category, totalCountEvent }) => {
+    const [data, setData] = useState(eventData)
+    const [totalCount, setTotalCount] = useState(totalCountEvent)
+    const [page, setPage] = useState(1)
+    const [isLoading, setIsLoading] = useState(false)
     const [columnFilters, setColumnFilters] = useState([])
     const [columnVisibility, setColumnVisibility] = useState({})
     const [rowSelection, setRowSelection] = useState({})
     const [selectedEvent, setSelectedEvent] = useState("all");
     const [selectedDate, setSelectedDate] = useState(null)
+    const [course, setCourse] = useState(null)
+    const [branch, setBranch] = useState(null)
     const [searchTerm, setSearchTerm] = useState("")
     const [calendarOpen, setCalendarOpen] = useState(false)
+
     const [pagination, setPagination] = useState({
         pageIndex: 0,
         pageSize: 50,
@@ -106,38 +117,9 @@ export const DataTable = ({ data, category }) => {
         return events;
     }, [category]);
 
-    const filteredData = useMemo(() => {
-        let filtered = data
-        if (selectedEvent !== "all") {
-            filtered = data.filter(
-                (item) =>
-                    Array.isArray(item.event) &&
-                    item.event.some(
-                        (event) =>
-                            event &&
-                            (event.includes(selectedEvent) || (selectedEvent === "Arm Wrestling" && event.startsWith("Arm Wrestling"))),
-                    ),
-            )
-        }
-        if (selectedDate) {
-            filtered = filtered.filter((item) => {
-                return item.createdAt.split("T")[0] === selectedDate.toISOString().split("T")[0]
-            })
-        }
-        if (searchTerm) {
-            filtered = filtered.filter(
-                (item) =>
-                    item.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                    item.email.toLowerCase().includes(searchTerm.toLowerCase()),
-            )
-        }
-        return filtered
-    }, [selectedEvent, selectedDate, searchTerm, data])
-
     const table = useReactTable({
-        data: filteredData,
+        data,
         columns,
-        onSortingChange: setSorting,
         onColumnFiltersChange: setColumnFilters,
         getCoreRowModel: getCoreRowModel(),
         getPaginationRowModel: getPaginationRowModel(),
@@ -147,7 +129,6 @@ export const DataTable = ({ data, category }) => {
         onRowSelectionChange: setRowSelection,
         onPaginationChange: setPagination,
         state: {
-            sorting,
             columnFilters,
             columnVisibility,
             rowSelection,
@@ -155,8 +136,59 @@ export const DataTable = ({ data, category }) => {
         },
     })
 
+    const loadData = useCallback(
+        async (reset = false, isLoadAll = false) => {
+            setIsLoading(true)
+            const newPage = reset ? 1 : page;
+
+            let pageSize = 50;
+            if (isLoadAll) {
+                pageSize = totalCount;
+            }
+
+            const result = await fetchEventData(category, newPage, pageSize, {
+                event: selectedEvent,
+                date: selectedDate ? selectedDate.toISOString().split("T")[0] : undefined,
+                searchTerm,
+                course,
+                branch
+            })
+            if (result.status === "SUCCESS") {
+                table.setPageSize(pageSize)
+                if (isLoadAll || reset) {
+                    setData(JSON.parse(result.users));
+                } else {
+                    setData((prevData) => [...prevData, ...JSON.parse(result.users)]);
+                }
+                setTotalCount(result.totalCount);
+                setPage(newPage)
+            }
+            setIsLoading(false)
+        },
+        [category, page, selectedEvent, selectedDate, searchTerm, course, branch],
+    )
+
+    useEffect(() => {
+        loadData(true)
+    }, [category, selectedEvent, selectedDate, searchTerm, loadData]) // Added loadData to depend
+
+
+    const handleDownload = () => {
+
+        if (data.length != totalCount) {
+            toast.info('Click Show All then Download to Download all student Data', {
+                action: <Link href="#showAll" className="bg-blue-500 text-white p-2 rounded-lg" >Go to Show All</Link>,
+            })
+        } else {
+            toast.success('Download All Student Data', {
+                action: <Button className="bg-green-700 text-white hover:!bg-green-400 " onClick={() => exportToExcel()}>Download Excel Data</Button>,
+            })
+        }
+    }
+
+
     const exportToExcel = () => {
-        const exportData = filteredData.map((item, i) => ({
+        const exportData = data.map((item, i) => ({
             "S.No": i + 1,
             "Roll No": item.rollno,
             Name: item.name,
@@ -219,7 +251,7 @@ export const DataTable = ({ data, category }) => {
         const url = URL.createObjectURL(blob);
         const a = document.createElement("a");
         a.href = url;
-        a.download = `students_data_${category}_${selectedEvent}_${selectedDate ? selectedDate.toISOString().split("T")[0] : ""}.xlsx`;
+        a.download = `students_data_${category}_${selectedEvent}-${course ? course : "All-Course"}-${branch ? branch : "All-Branch"}_${selectedDate ? selectedDate.toISOString().split("T")[0] : ""}.xlsx`;
         a.click();
         URL.revokeObjectURL(url);
     };
@@ -230,83 +262,98 @@ export const DataTable = ({ data, category }) => {
 
     useEffect(() => {
         setSelectedDate(null)
-    }, [data])
+    }, [eventData])
 
     return (
         <div className="w-full">
 
             <h3 className="small-heading" > {category} Details - {selectedDate && selectedDate.toISOString().split("T")[0]}  </h3>
 
-            <div className="flex items-center justify-between py-4 flex-wrap gap-5">
+            <div className="flex items-start flex-col py-4 flex-wrap gap-5 w-full">
 
-                <div className='flex gap-5 flex-wrap' >
+                <div className='flex gap-5 flex-col' >
+                    <div className="flex gap-5 flex-wrap" >
+                        <Input
+                            label="Enter name"
+                            placeholder="Filter names..."
+                            value={(table?.getColumn("name")?.getFilterValue() ?? "")}
+                            onChange={(event) =>
+                                table?.getColumn("name")?.setFilterValue(event.target.value)
+                            }
+                            className="!w-fit"
+                        />
 
-                    <Input
-                        label="Enter name"
-                        placeholder="Filter names..."
-                        value={(table.getColumn("name")?.getFilterValue() ?? "")}
-                        onChange={(event) =>
-                            table.getColumn("name")?.setFilterValue(event.target.value)
-                        }
-                        className="w-fit"
-                    />
 
-                    <Button onClick={exportToExcel} >
-                        <Download className="mr-2 h-4 w-4" />
-                        Export to Excel
-                    </Button>
+                        <Popover>
+                            <PopoverTrigger asChild>
+                                <Button variant={"outline"} className={cn("justify-start text-left font-normal", !selectedDate && "text-muted-foreground")}>
+                                    <CalendarIcon className="mr-2 h-4 w-4" />
+                                    {selectedDate ? formatDate(selectedDate) : <span>Pick a date</span>}
+                                </Button>
+                            </PopoverTrigger>
+                            <PopoverContent className="w-auto p-0" align="start">
+                                <Calendar
+                                    className="bg-white"
+                                    mode="single"
+                                    selected={selectedDate}
+                                    onSelect={(date) => {
+                                        if (date) {
+                                            const adjustedDate = new Date(date.getTime() - date.getTimezoneOffset() * 60000)
+                                            setSelectedDate(adjustedDate)
+                                        } else {
+                                            setSelectedDate(null)
+                                        }
+                                        setCalendarOpen(false)
+                                    }}
+                                    initialFocus
+                                    toDate={new Date()}
+                                    fromDate={new Date(2023, 0, 1)} // Adjust this date as needed
+                                    disabled={(date) => date > new Date() || date < new Date("2023-01-01")}
+                                />
+                            </PopoverContent>
+                        </Popover>
 
-                    <Popover>
-                        <PopoverTrigger asChild>
-                            <Button variant={"outline"} className={cn("justify-start text-left font-normal", !selectedDate && "text-muted-foreground")}>
-                                <CalendarIcon className="mr-2 h-4 w-4" />
-                                {selectedDate ? formatDate(selectedDate) : <span>Pick a date</span>}
-                            </Button>
-                        </PopoverTrigger>
-                        <PopoverContent className="w-auto p-0" align="start">
-                            <Calendar
-                                className="bg-white"
-                                mode="single"
-                                selected={selectedDate}
-                                onSelect={(date) => {
-                                    if (date) {
-                                        const adjustedDate = new Date(date.getTime() - date.getTimezoneOffset() * 60000)
-                                        setSelectedDate(adjustedDate)
-                                    } else {
-                                        setSelectedDate(null)
-                                    }
-                                    setCalendarOpen(false)
-                                }}
-                                initialFocus
-                                toDate={new Date()}
-                                fromDate={new Date(2023, 0, 1)} // Adjust this date as needed
-                                disabled={(date) => date > new Date() || date < new Date("2023-01-01")}
-                            />
-                        </PopoverContent>
-                    </Popover>
+                        <Select
+                            value={selectedEvent}
+                            onValueChange={setSelectedEvent}
+                        >
+                            <SelectTrigger className="w-[180px]">
+                                <SelectValue placeholder="Select event" />
+                            </SelectTrigger>
+                            <SelectContent className="!bg-white-1" >
+                                {allEventNames.map((eventName) => (
+                                    <SelectItem key={eventName} value={eventName}>
+                                        {eventName === "all" ? "All Events" : eventName}
+                                    </SelectItem>
+                                ))}
+                            </SelectContent>
+                        </Select>
 
-                    <Select
-                        value={selectedEvent}
-                        onValueChange={setSelectedEvent}
-                    >
-                        <SelectTrigger className="w-[180px]">
-                            <SelectValue placeholder="Select event" />
-                        </SelectTrigger>
-                        <SelectContent className="!bg-white-1" >
-                            {allEventNames.map((eventName) => (
-                                <SelectItem key={eventName} value={eventName}>
-                                    {eventName === "all" ? "All Events" : eventName}
-                                </SelectItem>
-                            ))}
-                        </SelectContent>
-                    </Select>
+                        <SelectCourse value={course} setCourse={setCourse} setBranch={setBranch} />
+                        <SelectBranch value={branch} selectedCourse={course} setBranch={setBranch} />
+
+                    </div>
+
+
+                    <div>
+                        <Button onClick={handleDownload} >
+                            <Download className="mr-2 h-4 w-4" />
+                            Export to Excel
+                        </Button>
+                    </div>
+
                 </div>
 
+                <div className="flex items-center justify-between space-x-2 py-4">
+                    <div className="flex-1 text-sm text-muted-foreground">
+                        {totalCount} Total Entries.
+                    </div>
+                </div>
             </div>
             <div className="rounded-md border mt-8">
                 <Table>
                     <TableHeader>
-                        {table.getHeaderGroups().map((headerGroup) => (
+                        {table?.getHeaderGroups().map((headerGroup) => (
                             <TableRow key={headerGroup.id}>
                                 {headerGroup.headers.map((header) => {
                                     return (
@@ -324,28 +371,19 @@ export const DataTable = ({ data, category }) => {
                         ))}
                     </TableHeader>
                     <TableBody>
-                        {table.getRowModel().rows?.length ? (
+                        {table?.getRowModel()?.rows && table?.getRowModel()?.rows.length > 0 ? (
                             table.getRowModel().rows.map((row) => (
-                                <TableRow
-                                    key={row.id}
-                                    data-state={row.getIsSelected() && "selected"}
-                                >
+                                <TableRow key={row.id} data-state={row.getIsSelected() && "selected"}>
                                     {row.getVisibleCells().map((cell) => (
                                         <TableCell key={cell.id}>
-                                            {flexRender(
-                                                cell.column.columnDef.cell,
-                                                cell.getContext()
-                                            )}
+                                            {flexRender(cell.column.columnDef.cell, cell.getContext())}
                                         </TableCell>
                                     ))}
                                 </TableRow>
                             ))
                         ) : (
                             <TableRow>
-                                <TableCell
-                                    colSpan={columns.length}
-                                    className="h-24 text-center"
-                                >
+                                <TableCell colSpan={columns.length} className="h-24 text-center">
                                     No results.
                                 </TableCell>
                             </TableRow>
@@ -353,21 +391,14 @@ export const DataTable = ({ data, category }) => {
                     </TableBody>
                 </Table>
             </div>
-            <div className="flex items-center justify-between space-x-2 py-4">
-                <div className="flex-1 text-sm text-muted-foreground">
-                    {table.getFilteredRowModel().rows.length} Total Entries.
+
+            {data?.length < totalCount && (
+                <div className="flex justify-center mt-4">
+                    <Button id="showAll" onClick={() => loadData(false, true)} disabled={isLoading}>
+                        {isLoading ? "Loading..." : "Show All"}
+                    </Button>
                 </div>
-            </div>
-            <div className="flex justify-center mt-4">
-                <Button
-                    onClick={() => {
-                        const newPageSize = table.getState().pagination.pageSize + 10
-                        table.setPageSize(newPageSize)
-                    }}
-                >
-                    Show More
-                </Button>
-            </div>
+            )}
         </div>
     )
 }

@@ -8,7 +8,7 @@ import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, Command
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { useState } from "react"
 
-export const SelectCourse = ({ value, setCourse }) => {
+export const SelectCourse = ({ value, setCourse, setBranch }) => {
     const [open, setOpen] = useState(false)
 
     return (
@@ -39,6 +39,7 @@ export const SelectCourse = ({ value, setCourse }) => {
                                     className="select_item"
                                     onSelect={(currentValue) => {
                                         setCourse(currentValue === value ? "" : currentValue)
+                                        setBranch(currentValue === value && "")
                                         setOpen(false)
                                     }}
                                 >

@@ -50,7 +50,7 @@ const Input = React.forwardRef(({ className, type, label, ...props }, ref) => {
 
   return (
     <div
-      className="relative w-full"
+      className="relative"
       ref={containerRef}
       onMouseEnter={() => handleHover(true)}
       onMouseLeave={() => handleHover(false)}
