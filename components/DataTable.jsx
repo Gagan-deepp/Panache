@@ -84,6 +84,7 @@ const columns = [
 ]
 
 export const DataTable = ({ eventData, category, totalCountEvent }) => {
+    console.log("Event data ==> ", eventData)
     const [data, setData] = useState(eventData)
     const [totalCount, setTotalCount] = useState(totalCountEvent)
     const [page, setPage] = useState(1)
@@ -145,7 +146,7 @@ export const DataTable = ({ eventData, category, totalCountEvent }) => {
             if (isLoadAll) {
                 pageSize = totalCount;
             }
-
+            console.log("Selected event : ", selectedEvent)
             const result = await fetchEventData(category, newPage, pageSize, {
                 event: selectedEvent,
                 date: selectedDate ? selectedDate.toISOString().split("T")[0] : undefined,
