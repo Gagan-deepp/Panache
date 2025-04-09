@@ -107,7 +107,11 @@ const UpdateForm = () => {
   }
 
   const calculateTotalAmount = (events) => {
+    console.log(" i am in calculate total amount")
+    console.log("Events ==> ", events)
     return events.reduce((total, event) => {
+
+      console.log("I am in reduce function")
       let eventTotal = 0;
 
       // Find the event price by searching through categories
@@ -115,6 +119,7 @@ const UpdateForm = () => {
         const foundEvent = eventPrices[category].find((e) => e.name === event.eventName);
         if (foundEvent) {
           eventTotal = foundEvent.price;
+          console.log("I am in first if")
           break;
         }
 
@@ -129,9 +134,12 @@ const UpdateForm = () => {
       }
 
       // Add game-specific prices if "Online Gaming" is selected
-      if (event.eventName === "Online Gaming" && event.game) {
+      if (event.eventName === "Online Gaming" && event.eventGame) {
+
+        console.log("I am in online gaming if")
         for (const category in eventPrices) {
           const foundGame = eventPrices[category].find(e => e.name === event.game);
+          console.log("Online gaming - Found Game => ", foundGame)
           if (foundGame) {
             eventTotal += foundGame.price;
             break;

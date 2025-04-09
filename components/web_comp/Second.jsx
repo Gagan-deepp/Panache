@@ -1,6 +1,18 @@
+"use client"
 import Image from "next/image"
+import { motion } from "framer-motion"
+import { useState } from "react"
 
 const Second = () => {
+    const [count, setCount] = useState(0)
+    const handleClick = (type) => {
+        if (count === 10) {
+            setCount(0)
+            alert(type === "srgi" ? "College chutiya hai !!" : "Fuck Panache")
+            return
+        }
+        setCount(prev => prev + 1)
+    }
     return (
         <div>
             <section className="section flex-col sm:flex-row sm:max-h-[70dvh]" >
@@ -19,9 +31,9 @@ const Second = () => {
                     </div>
                 </div>
 
-                <div className="relative w-full aspect-square rounded-xl " >
+                <motion.div whileTap={{ scale: 0.9 }} transition={{ ease: "easeInOut", duration: 0.4 }} className="relative w-full aspect-square rounded-xl cursor-pointer " onClick={() => handleClick("srgi")} >
                     <Image src="/srgi.avif" fill={true} className="object-cover rounded-xl" alt="banner" />
-                </div>
+                </motion.div>
             </section>
 
 
@@ -43,9 +55,9 @@ const Second = () => {
                     </div>
                 </div>
 
-                <div className="relative w-full aspect-square rounded-xl " >
+                <motion.div whileTap={{ scale: 0.9 }} transition={{ ease: "easeInOut", duration: 0.4 }} className="relative w-full aspect-square rounded-xl " onClick={() => handleClick("panache")} >
                     <Image src="/panache.jpg" fill={true} className="object-cover rounded-xl" alt="banner" />
-                </div>
+                </motion.div>
             </section>
         </div>
     )

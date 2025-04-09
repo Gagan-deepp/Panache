@@ -12,7 +12,6 @@ export default function Home() {
       <Hero />
       <div className="section_container" >
         <Second />
-        <Bento />
         <Events />
       </div>
       <section className="grey_container !min-h-[300px] rounded-3xl relative my-12" >
