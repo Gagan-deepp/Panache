@@ -30,8 +30,9 @@ const Team = () => {
                                 {team?.users?.map((member) => {
                                     return (
                                         <div key={member.name} className="bg-[#ddcecb] px-4 py-6 rounded-xl flex-center flex-col gap-3 min-w-[10rem]" >
+                                            
                                             <div className="relative profile_image" >
-                                                <Image src={`https://drive.google.com/uc?id=${member.image}`} alt={member.name} fill={true} className={`object-cover rounded-full saturate-150 ${team.role === "Cultural Team" && "object-top"} `} />
+                                                <Image src={`https://drive.google.com/uc?id=${member.image}`} alt={member.name} loading="lazy" fill={true} quality={60} className={`object-cover rounded-full saturate-150 ${team.role === "Cultural Team" && "object-top"} `} />
                                             </div>
                                             <div className="flex-center flex-col" >
                                                 <h3 className="font-medium" > {member.name} </h3>

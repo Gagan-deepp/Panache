@@ -4,6 +4,7 @@ import { redirect } from 'next/navigation'
 import RegisterForm from '@/components/RegisterForm'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import GroupForm from '@/components/GroupForm'
+import ClosedRegistration from '@/components/web_comp/ClosedRegistration'
 
 
 const page = async () => {
@@ -18,7 +19,10 @@ const page = async () => {
                 <h1 className="heading"> Student <br /> Registration </h1>
             </section>
 
-            <Tabs defaultValue="single" className="w-full mt-12 ">
+
+            <ClosedRegistration />
+
+            {/* <Tabs defaultValue="single" className="w-full mt-12 ">
                 <TabsList className="tab" >
                     <TabsTrigger value="single" className="tab" >Single Event</TabsTrigger>
                     <TabsTrigger value="group" className="tab" >Group Event</TabsTrigger>
@@ -32,7 +36,7 @@ const page = async () => {
                     <h1 className='sub-heading my-8 textColor' > Group Event </h1>
                     <GroupForm />
                 </TabsContent>
-            </Tabs>
+            </Tabs> */}
         </div>
     )
 }
